@@ -15,7 +15,7 @@
   }
   html,body{font-family:'Inter',sans-serif;background:var(--dark);color:var(--white);-webkit-font-smoothing:antialiased;min-height:100vh}
 
-  /* ── HEADER ── */
+  /* HEADER */
   .hdr{height:68px;padding:0 48px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--dark);z-index:10}
   .logo-area{display:flex;align-items:center;gap:12px}
   .logo-mark{width:32px;height:32px;background:var(--green);border-radius:8px;display:flex;align-items:center;justify-content:center}
@@ -24,91 +24,89 @@
   .logo-name span{color:var(--green)}
   .hdr-center{font-size:13px;color:var(--t2);text-align:center}
   .hdr-center strong{color:var(--white);display:block;font-size:14px}
-  .hdr-right{display:flex;align-items:center;gap:10px}
+  .hdr-right{display:flex;gap:10px}
   .btn-s{background:transparent;color:var(--mist);border:1px solid var(--border);border-radius:10px;padding:8px 16px;font-size:13px;font-family:'Inter',sans-serif;cursor:pointer;transition:all .15s}
   .btn-s:hover{border-color:var(--t2);color:var(--white)}
   .btn-p{background:var(--green);color:var(--dark);border:none;border-radius:10px;padding:8px 18px;font-size:13px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;transition:opacity .2s}
   .btn-p:hover{opacity:.88}
 
-  /* ── PAGE ── */
-  .page{max-width:1100px;margin:0 auto;padding:40px 40px 80px}
+  /* PAGE */
+  .page{max-width:1200px;margin:0 auto;padding:40px 40px 80px}
 
-  /* ── TOP ── */
-  .top-bar{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:32px;gap:16px;flex-wrap:wrap}
+  /* TOP */
+  .top-bar{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:28px;gap:16px;flex-wrap:wrap}
   .top-bar h1{font-size:26px;font-weight:600}
   .top-bar p{font-size:14px;color:var(--t2);margin-top:4px}
-  .top-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .top-actions{display:flex;gap:10px;flex-wrap:wrap}
 
-  /* ── STATS ── */
+  /* STATS */
   .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:32px}
   .stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px}
   .stat-label{font-size:11px;color:var(--t2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
   .stat-value{font-size:26px;font-weight:700;line-height:1}
   .stat-sub{font-size:12px;color:var(--t2);margin-top:5px}
 
-  /* ── FILTROS ── */
-  .filtros{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
-  .filtro-label{font-size:12px;color:var(--t2)}
-  .filtro-btn{background:transparent;border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:12px;color:var(--mist);font-family:'Inter',sans-serif;cursor:pointer;transition:all .15s}
-  .filtro-btn:hover{border-color:var(--border2);color:var(--white)}
-  .filtro-btn.active{background:rgba(147,245,116,0.1);border-color:var(--border2);color:var(--green)}
-  .search-wrap{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:7px 12px;margin-left:auto}
-  .search-wrap input{background:transparent;border:none;color:var(--white);font-size:13px;font-family:'Inter',sans-serif;outline:none;width:180px}
-  .search-wrap input::placeholder{color:var(--t1)}
+  /* CARDS GRID */
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:40px}
+  .cand-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;transition:border-color .2s;position:relative}
+  .cand-card:hover{border-color:var(--border2)}
+  .cand-card.top1{border-color:rgba(255,215,0,0.4);background:rgba(255,215,0,0.04)}
+  .cand-card.top2{border-color:rgba(192,192,192,0.35)}
+  .cand-card.top3{border-color:rgba(205,127,50,0.35)}
+  .card-pos{font-size:11px;color:var(--t2);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+  .medal{font-size:14px}
+  .card-name{font-size:14px;font-weight:600;color:var(--white);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .card-email{font-size:11px;color:var(--t2);margin-bottom:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .card-score{font-size:28px;font-weight:700;line-height:1;margin-bottom:4px}
+  .card-score span{font-size:14px;font-weight:400;color:var(--t2)}
+  .card-bar-wrap{height:4px;background:rgba(255,255,255,0.07);border-radius:2px;margin-bottom:8px}
+  .card-bar{height:4px;border-radius:2px;transition:width .4s}
+  .card-tag{font-size:11px;font-weight:500}
+  .tag-acima{color:var(--green)}
+  .tag-abaixo{color:var(--red)}
+  .tag-medio{color:var(--yellow)}
+  .card-pendente{color:var(--t2);font-size:12px;margin-top:8px}
 
-  /* ── TABELA ── */
+  /* TABELA DETALHADA */
+  .section-title{font-size:13px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px}
   .table-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;overflow-x:auto}
-  table{width:100%;border-collapse:collapse;min-width:700px}
+  table{width:100%;border-collapse:collapse;min-width:800px}
   thead tr{border-bottom:1px solid var(--border)}
-  th{padding:12px 16px;font-size:11px;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;font-weight:600;text-align:left;white-space:nowrap;cursor:pointer;user-select:none;transition:color .15s}
-  th:hover{color:var(--mist)}
-  th.sorted{color:var(--green)}
-  th .sort-icon{margin-left:4px;opacity:.5}
-  th.sorted .sort-icon{opacity:1}
+  th{padding:10px 12px;font-size:11px;color:var(--t2);text-transform:uppercase;letter-spacing:.04em;font-weight:600;text-align:center;white-space:nowrap;background:rgba(0,0,0,0.1)}
+  th.th-left{text-align:left}
+  th.th-cenario{color:var(--green);background:rgba(147,245,116,0.06)}
   tbody tr{border-bottom:1px solid var(--border);transition:background .15s}
   tbody tr:last-child{border-bottom:none}
-  tbody tr:hover{background:rgba(147,245,116,0.03)}
-  td{padding:14px 16px;font-size:13px;vertical-align:middle}
+  tbody tr:hover{background:rgba(147,245,116,0.02)}
+  td{padding:12px 12px;font-size:12px;text-align:center;vertical-align:middle}
+  td.td-left{text-align:left}
+  td.td-cenario{background:rgba(147,245,116,0.04)}
 
-  /* ── POSIÇÃO ── */
-  .pos{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
-  .pos-1{background:rgba(255,215,0,0.15);color:#FFD700;border:1px solid rgba(255,215,0,0.3)}
-  .pos-2{background:rgba(192,192,192,0.15);color:#C0C0C0;border:1px solid rgba(192,192,192,0.3)}
-  .pos-3{background:rgba(205,127,50,0.15);color:#CD7F32;border:1px solid rgba(205,127,50,0.3)}
-  .pos-n{background:rgba(255,255,255,0.05);color:var(--t2);border:1px solid var(--border)}
+  /* CANDIDATO CELL */
+  .tc-name{font-size:13px;font-weight:500;color:var(--white)}
+  .tc-email{font-size:11px;color:var(--t2);margin-top:1px}
 
-  /* ── CANDIDATO CELL ── */
-  .cand-cell{display:flex;flex-direction:column;gap:2px}
-  .cand-cell-name{font-weight:500;color:var(--white)}
-  .cand-cell-email{font-size:11px;color:var(--t2)}
+  /* NOTA BADGE */
+  .nb{display:inline-flex;align-items:center;justify-content:center;width:28px;height:22px;border-radius:5px;font-size:11px;font-weight:600}
+  .nb-0{color:var(--t1)}
+  .nb-1{background:rgba(229,91,91,0.12);color:#E55B5B}
+  .nb-2{background:rgba(246,195,67,0.12);color:#F6C343}
+  .nb-3{background:rgba(103,138,136,0.18);color:var(--mist)}
+  .nb-4{background:rgba(100,200,150,0.12);color:#64C896}
+  .nb-5{background:rgba(147,245,116,0.12);color:var(--green)}
 
-  /* ── NOTA BADGE ── */
-  .nota{display:inline-flex;align-items:center;justify-content:center;width:32px;height:24px;border-radius:6px;font-size:12px;font-weight:600}
-  .nota-0{background:rgba(255,255,255,0.04);color:var(--t1)}
-  .nota-1{background:rgba(229,91,91,0.12);color:#E55B5B}
-  .nota-2{background:rgba(246,195,67,0.12);color:#F6C343}
-  .nota-3{background:rgba(103,138,136,0.18);color:var(--mist)}
-  .nota-4{background:rgba(100,200,150,0.12);color:#64C896}
-  .nota-5{background:rgba(147,245,116,0.12);color:var(--green)}
+  /* SUBTOTAL CENÁRIO */
+  .nb-sub{display:inline-flex;align-items:center;justify-content:center;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;background:rgba(147,245,116,0.1);color:var(--green);border:1px solid var(--border2)}
+  .nb-sub.baixo{background:rgba(229,91,91,0.1);color:var(--red);border-color:rgba(229,91,91,0.3)}
+  .nb-sub.medio{background:rgba(246,195,67,0.1);color:var(--yellow);border-color:rgba(246,195,67,0.3)}
 
-  /* ── MÉDIA ── */
-  .media-cell{display:flex;align-items:center;gap:8px}
-  .media-num{font-size:16px;font-weight:700}
-  .media-bar-wrap{flex:1;height:4px;background:rgba(255,255,255,0.06);border-radius:2px;min-width:40px}
-  .media-bar{height:4px;border-radius:2px;background:var(--green);transition:width .3s}
+  /* TOTAL */
+  .total-cell{font-size:14px;font-weight:700}
+  .total-alto{color:var(--green)}
+  .total-medio{color:var(--yellow)}
+  .total-baixo{color:var(--red)}
 
-  /* ── STATUS ── */
-  .status-aval{font-size:11px;padding:3px 10px;border-radius:99px;background:rgba(147,245,116,0.1);color:var(--green);border:1px solid var(--border2)}
-  .status-pend{font-size:11px;padding:3px 10px;border-radius:99px;background:rgba(255,255,255,0.04);color:var(--t2);border:1px solid var(--border)}
-
-  /* ── BTN AVALIAR ── */
-  .btn-row{background:transparent;border:1px solid var(--border);border-radius:7px;padding:5px 12px;font-size:12px;color:var(--mist);font-family:'Inter',sans-serif;cursor:pointer;transition:all .15s;white-space:nowrap}
-  .btn-row:hover{border-color:var(--border2);color:var(--white)}
-
-  /* ── EMPTY ── */
-  .empty-row td{text-align:center;padding:56px;color:var(--t2);font-size:14px}
-
-  /* ── LOADING ── */
+  /* LOADING */
   .loading-wrap{padding:56px;text-align:center;color:var(--t2)}
   .loading-dots{display:inline-flex;gap:6px;margin-top:12px}
   .loading-dots span{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.2s ease-in-out infinite}
@@ -116,16 +114,16 @@
   .loading-dots span:nth-child(3){animation-delay:.4s}
   @keyframes pulse{0%,100%{opacity:.2}50%{opacity:1}}
 
-  @media(max-width:640px){
+  @media(max-width:768px){
     .hdr,.page{padding-left:20px;padding-right:20px}
     .stats{grid-template-columns:1fr 1fr}
     .hdr-center{display:none}
+    .cards-grid{grid-template-columns:1fr 1fr}
   }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header class="hdr">
   <div class="logo-area">
     <div class="logo-mark">
@@ -138,62 +136,41 @@
     <span id="hdr-sub">carregando…</span>
   </div>
   <div class="hdr-right">
-    <button class="btn-s" onclick="window.location.href='avaliar.html?p='+processId">← Avaliação</button>
+    <button class="btn-s" onclick="window.location.href='avaliar.html?p='+processId">← Avaliar</button>
     <button class="btn-s" onclick="window.location.href='painel.html'">Painel</button>
-    <button class="btn-p" onclick="exportarCSV()">⬇ Exportar CSV</button>
+    <button class="btn-p" onclick="exportarCSV()">⬇ CSV</button>
   </div>
 </header>
 
-<!-- PAGE -->
 <div class="page">
 
   <div class="top-bar">
     <div>
-      <h1>Ranking de candidatos</h1>
-      <p id="processo-sub">carregando…</p>
+      <h1>Painel Comparativo</h1>
+      <p id="ranking-sub">carregando…</p>
     </div>
   </div>
 
   <!-- STATS -->
   <div class="stats">
-    <div class="stat">
-      <div class="stat-label">Candidatos</div>
-      <div class="stat-value" id="st-total">—</div>
-      <div class="stat-sub">enviaram respostas</div>
-    </div>
-    <div class="stat">
-      <div class="stat-label">Avaliados</div>
-      <div class="stat-value" id="st-aval" style="color:var(--green)">—</div>
-      <div class="stat-sub">com nota registrada</div>
-    </div>
-    <div class="stat">
-      <div class="stat-label">Maior nota</div>
-      <div class="stat-value" id="st-max" style="color:var(--green)">—</div>
-      <div class="stat-sub">média mais alta</div>
-    </div>
-    <div class="stat">
-      <div class="stat-label">Média geral</div>
-      <div class="stat-value" id="st-media">—</div>
-      <div class="stat-sub">todos os avaliados</div>
+    <div class="stat"><div class="stat-label">Candidatos</div><div class="stat-value" id="st-total">—</div><div class="stat-sub">enviaram respostas</div></div>
+    <div class="stat"><div class="stat-label">Avaliados</div><div class="stat-value" id="st-aval" style="color:var(--green)">—</div><div class="stat-sub">com nota registrada</div></div>
+    <div class="stat"><div class="stat-label">Maior nota</div><div class="stat-value" id="st-max" style="color:var(--green)">—</div><div class="stat-sub">pontuação máxima</div></div>
+    <div class="stat"><div class="stat-label">Média geral</div><div class="stat-value" id="st-media">—</div><div class="stat-sub">dos avaliados</div></div>
+  </div>
+
+  <!-- CARDS -->
+  <div class="section-title">Candidatos</div>
+  <div class="cards-grid" id="cards-grid">
+    <div class="loading-wrap" style="grid-column:1/-1">
+      <div class="loading-dots"><span></span><span></span><span></span></div>
     </div>
   </div>
 
-  <!-- FILTROS -->
-  <div class="filtros">
-    <span class="filtro-label">Filtrar:</span>
-    <button class="filtro-btn active" onclick="setFiltro('todos',this)">Todos</button>
-    <button class="filtro-btn" onclick="setFiltro('avaliados',this)">Avaliados</button>
-    <button class="filtro-btn" onclick="setFiltro('pendentes',this)">Pendentes</button>
-    <div class="search-wrap">
-      <span style="color:var(--t2);font-size:13px">🔍</span>
-      <input type="text" placeholder="Buscar candidato…" oninput="buscar(this.value)">
-    </div>
-  </div>
-
-  <!-- TABELA -->
+  <!-- TABELA DETALHADA -->
+  <div class="section-title">Notas por cenário e questão</div>
   <div class="table-wrap" id="table-wrap">
     <div class="loading-wrap">
-      Carregando ranking
       <div class="loading-dots"><span></span><span></span><span></span></div>
     </div>
   </div>
@@ -220,10 +197,7 @@
 
   window.processId = new URLSearchParams(window.location.search).get('p');
   let processo = null;
-  let dados = []; // candidatos + avaliações merged
-  let filtroAtual = 'todos';
-  let buscaAtual = '';
-  let ordenacao = { campo: 'total', dir: 'desc' };
+  let dados = [];
 
   onAuthStateChanged(auth, async user => {
     if (!user) { window.location.href = 'index.html'; return; }
@@ -239,7 +213,7 @@
 
       document.getElementById('hdr-titulo').textContent = processo.title;
       document.getElementById('hdr-sub').textContent = `${processo.role} · ${processo.area}`;
-      document.getElementById('processo-sub').textContent = `${processo.role} · ${processo.area}`;
+      document.getElementById('ranking-sub').textContent = `${dados.length} candidatos · ${Object.keys({}).length} avaliados`;
 
       const [subSnap, evalSnap] = await Promise.all([
         getDocs(collection(db, 'processes', window.processId, 'submissions')),
@@ -253,198 +227,161 @@
       subSnap.forEach(d => {
         const sub = { id: d.id, ...d.data() };
         const aval = avaliacoes[d.id] || null;
-        dados.push({ ...sub, avaliacao: aval, total: aval?.total || null });
+        // Calcula total em 100 pontos
+        const totalPontos = aval ? calcularTotal100(aval.scores, processo.scenarios) : null;
+        dados.push({ ...sub, avaliacao: aval, total100: totalPontos });
+      });
+
+      // Ordena: avaliados por nota desc, depois pendentes
+      dados.sort((a, b) => {
+        if (a.total100 !== null && b.total100 !== null) return b.total100 - a.total100;
+        if (a.total100 !== null) return -1;
+        if (b.total100 !== null) return 1;
+        return 0;
       });
 
       atualizarStats();
+      renderCards();
       renderTabela();
+
+      const avaliados = dados.filter(d => d.total100 !== null).length;
+      document.getElementById('ranking-sub').textContent = `${dados.length} candidatos · ${avaliados} avaliados`;
     } catch(e) {
-      document.getElementById('table-wrap').innerHTML = `<div class="loading-wrap" style="color:var(--red)">Erro: ${e.message}</div>`;
+      console.error(e);
     }
+  }
+
+  function calcularTotal100(scores, scenarios) {
+    if (!scores || scores.length === 0) return null;
+    // Total máximo = nº de perguntas × 5
+    const totalPergs = scenarios.reduce((acc, sc) => acc + sc.questions.length, 0);
+    const maxPontos = totalPergs * 5;
+    const obtido = scores.reduce((acc, s) => acc + s.score, 0);
+    return Math.round((obtido / maxPontos) * 100);
   }
 
   function atualizarStats() {
-    const avaliados = dados.filter(d => d.total !== null);
+    const avaliados = dados.filter(d => d.total100 !== null);
     document.getElementById('st-total').textContent = dados.length;
     document.getElementById('st-aval').textContent = avaliados.length;
     if (avaliados.length > 0) {
-      const max = Math.max(...avaliados.map(d => d.total));
-      const media = avaliados.reduce((a, b) => a + b.total, 0) / avaliados.length;
-      document.getElementById('st-max').textContent = max.toFixed(1);
-      document.getElementById('st-media').textContent = media.toFixed(1);
-    } else {
-      document.getElementById('st-max').textContent = '—';
-      document.getElementById('st-media').textContent = '—';
+      const max = Math.max(...avaliados.map(d => d.total100));
+      const media = Math.round(avaliados.reduce((a, b) => a + b.total100, 0) / avaliados.length);
+      document.getElementById('st-max').textContent = max;
+      document.getElementById('st-media').textContent = media;
     }
   }
 
-  function dadosFiltrados() {
-    let lista = [...dados];
-    if (filtroAtual === 'avaliados') lista = lista.filter(d => d.total !== null);
-    if (filtroAtual === 'pendentes') lista = lista.filter(d => d.total === null);
-    if (buscaAtual) {
-      const t = buscaAtual.toLowerCase();
-      lista = lista.filter(d => d.name?.toLowerCase().includes(t) || d.email?.toLowerCase().includes(t));
-    }
-    // Ordena
-    lista.sort((a, b) => {
-      let va = a[ordenacao.campo] ?? -1;
-      let vb = b[ordenacao.campo] ?? -1;
-      if (typeof va === 'string') va = va.toLowerCase();
-      if (typeof vb === 'string') vb = vb.toLowerCase();
-      if (va < vb) return ordenacao.dir === 'asc' ? -1 : 1;
-      if (va > vb) return ordenacao.dir === 'asc' ? 1 : -1;
-      return 0;
-    });
-    return lista;
+  function renderCards() {
+    const grid = document.getElementById('cards-grid');
+    const medals = ['🥇','🥈','🥉'];
+    let pos = 0;
+
+    grid.innerHTML = dados.map((c, i) => {
+      const avaliado = c.total100 !== null;
+      if (avaliado) pos++;
+      const posReal = avaliado ? pos : null;
+      const cardClass = posReal === 1 ? 'top1' : posReal === 2 ? 'top2' : posReal === 3 ? 'top3' : '';
+      const medal = posReal && posReal <= 3 ? medals[posReal-1] : '';
+      const barColor = c.total100 >= 70 ? 'var(--green)' : c.total100 >= 50 ? 'var(--yellow)' : 'var(--red)';
+      const tag = c.total100 >= 70 ? '<span class="card-tag tag-acima">Acima do esperado</span>'
+                : c.total100 >= 50 ? '<span class="card-tag tag-medio">Na média</span>'
+                : c.total100 !== null ? '<span class="card-tag tag-abaixo">Abaixo do esperado</span>' : '';
+
+      return `<div class="cand-card ${cardClass}">
+        <div class="card-pos">
+          ${medal ? `<span class="medal">${medal}</span>` : ''}
+          <span>${posReal ? '#'+posReal : '#'+(i+1)}</span>
+        </div>
+        <div class="card-name" title="${esc(c.name)}">${esc(c.name)}</div>
+        <div class="card-email" title="${esc(c.email)}">${esc(c.email)}</div>
+        ${avaliado ? `
+          <div class="card-score" style="color:${barColor}">${c.total100}<span>/100</span></div>
+          <div class="card-bar-wrap"><div class="card-bar" style="width:${c.total100}%;background:${barColor}"></div></div>
+          ${tag}
+        ` : `<div class="card-pendente">Aguardando avaliação</div>`}
+      </div>`;
+    }).join('');
   }
 
   function renderTabela() {
-    const lista = dadosFiltrados();
-    const avaliados = dados.filter(d => d.total !== null);
-    const maxTotal = avaliados.length > 0 ? Math.max(...avaliados.map(d => d.total)) : 5;
-    const nCenarios = processo?.scenarios?.length || 0;
+    const wrap = document.getElementById('table-wrap');
+    const scs = processo.scenarios;
 
-    const thSort = (campo, label) => {
-      const ativo = ordenacao.campo === campo;
-      const icon = ativo ? (ordenacao.dir === 'asc' ? '↑' : '↓') : '↕';
-      return `<th class="${ativo ? 'sorted' : ''}" onclick="ordenarPor('${campo}')">${label} <span class="sort-icon">${icon}</span></th>`;
-    };
-
-    let html = `<table>
-      <thead><tr>
-        <th style="width:48px">#</th>
-        ${thSort('name','Candidato')}
-        ${processo?.scenarios?.map((s,i) => `<th style="text-align:center">C${i+1}<br><span style="font-size:10px;font-weight:400;color:var(--t2)">${esc(s.title?.substring(0,12))}…</span></th>`).join('') || ''}
-        ${thSort('total','Média')}
-        <th>Status</th>
-        <th></th>
-      </tr></thead>
-      <tbody>`;
-
-    if (lista.length === 0) {
-      html += `<tr class="empty-row"><td colspan="${4 + nCenarios}">Nenhum candidato encontrado.</td></tr>`;
-    } else {
-      // Ranking real (só avaliados)
-      const avaliadosOrdenados = dados.filter(d => d.total !== null).sort((a,b) => b.total - a.total);
-      const posMap = {};
-      avaliadosOrdenados.forEach((d, i) => posMap[d.id] = i + 1);
-
-      lista.forEach(c => {
-        const pos = posMap[c.id] || null;
-        const posClass = pos === 1 ? 'pos-1' : pos === 2 ? 'pos-2' : pos === 3 ? 'pos-3' : 'pos-n';
-        const posLabel = pos || '—';
-        const submittedAt = c.submittedAt
-          ? new Date(c.submittedAt.seconds * 1000).toLocaleDateString('pt-BR')
-          : '—';
-
-        // Notas por cenário
-        const notasCenario = processo?.scenarios?.map((s, si) => {
-          if (!c.avaliacao?.scores) return `<td style="text-align:center"><span class="nota nota-0">—</span></td>`;
-          const notasSc = c.avaliacao.scores.filter(sc => sc.si === si);
-          if (notasSc.length === 0) return `<td style="text-align:center"><span class="nota nota-0">—</span></td>`;
-          const media = notasSc.reduce((a, b) => a + b.score, 0) / notasSc.length;
-          const n = Math.round(media);
-          return `<td style="text-align:center"><span class="nota nota-${n}">${media.toFixed(1)}</span></td>`;
-        }).join('') || '';
-
-        const mediaBar = c.total !== null
-          ? `<div class="media-cell">
-               <span class="media-num" style="color:${c.total >= 4 ? 'var(--green)' : c.total >= 3 ? 'var(--mist)' : 'var(--yellow)'}">${c.total.toFixed(1)}</span>
-               <div class="media-bar-wrap"><div class="media-bar" style="width:${(c.total/5)*100}%"></div></div>
-             </div>`
-          : '<span style="color:var(--t2);font-size:13px">—</span>';
-
-        html += `<tr>
-          <td><div class="pos ${posClass}">${posLabel}</div></td>
-          <td>
-            <div class="cand-cell">
-              <span class="cand-cell-name">${esc(c.name)}</span>
-              <span class="cand-cell-email">${esc(c.email)} · ${submittedAt}</span>
-            </div>
-          </td>
-          ${notasCenario}
-          <td>${mediaBar}</td>
-          <td>${c.avaliacao ? '<span class="status-aval">✓ Avaliado</span>' : '<span class="status-pend">Pendente</span>'}</td>
-          <td><button class="btn-row" onclick="window.location.href='avaliar.html?p=${window.processId}'">Avaliar →</button></td>
-        </tr>`;
+    // Cabeçalhos
+    let thead = `<tr><th class="th-left" style="min-width:160px">Candidato</th>`;
+    scs.forEach((sc, si) => {
+      sc.questions.forEach((q, qi) => {
+        thead += `<th>C${si+1} Q${qi+1}</th>`;
       });
-    }
+      thead += `<th class="th-cenario">C${si+1}</th>`;
+    });
+    thead += `<th style="min-width:60px">Total</th></tr>`;
 
-    html += `</tbody></table>`;
-    document.getElementById('table-wrap').innerHTML = html;
+    // Linhas
+    let tbody = '';
+    dados.forEach(c => {
+      tbody += `<tr>
+        <td class="td-left">
+          <div class="tc-name">${esc(c.name)}</div>
+          <div class="tc-email">${esc(c.email)}</div>
+        </td>`;
+
+      scs.forEach((sc, si) => {
+        let subtotal = 0, maxSub = sc.questions.length * 5, contadas = 0;
+        sc.questions.forEach((q, qi) => {
+          const score = c.avaliacao?.scores?.find(s => s.si === si && s.qi === qi)?.score;
+          if (score != null) { subtotal += score; contadas++; }
+          tbody += `<td>${score != null ? `<span class="nb nb-${score}">${score}</span>` : '<span style="color:var(--t1)">—</span>'}</td>`;
+        });
+        const subClass = contadas === 0 ? '' : subtotal/maxSub >= 0.7 ? '' : subtotal/maxSub >= 0.5 ? 'medio' : 'baixo';
+        tbody += `<td class="td-cenario">${contadas > 0 ? `<span class="nb-sub ${subClass}">${subtotal}/${maxSub}</span>` : '<span style="color:var(--t1)">—</span>'}</td>`;
+      });
+
+      const t = c.total100;
+      const tClass = t == null ? '' : t >= 70 ? 'total-alto' : t >= 50 ? 'total-medio' : 'total-baixo';
+      tbody += `<td><span class="total-cell ${tClass}">${t != null ? t : '—'}</span></td></tr>`;
+    });
+
+    wrap.innerHTML = `<table><thead>${thead}</thead><tbody>${tbody}</tbody></table>`;
   }
 
-  window.ordenarPor = function(campo) {
-    if (ordenacao.campo === campo) {
-      ordenacao.dir = ordenacao.dir === 'asc' ? 'desc' : 'asc';
-    } else {
-      ordenacao.campo = campo;
-      ordenacao.dir = 'desc';
-    }
-    renderTabela();
-  };
-
-  window.setFiltro = function(filtro, btn) {
-    filtroAtual = filtro;
-    document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderTabela();
-  };
-
-  window.buscar = function(termo) {
-    buscaAtual = termo;
-    renderTabela();
-  };
-
-  // ── EXPORTAR CSV ──
+  // EXPORTAR CSV
   window.exportarCSV = function() {
-    if (!processo || dados.length === 0) { alert('Nenhum dado para exportar.'); return; }
+    if (!processo || dados.length === 0) return;
+    const scs = processo.scenarios;
+    const headers = ['Posição','Nome','E-mail'];
+    scs.forEach((sc, si) => {
+      sc.questions.forEach((q, qi) => headers.push(`C${si+1} Q${qi+1}`));
+      headers.push(`C${si+1} Subtotal`);
+    });
+    headers.push('Total (100)');
 
-    const headers = ['Posição','Nome','E-mail','Data de envio','Tempo'];
-    processo.scenarios.forEach((s, i) => headers.push(`Cenário ${i+1} — ${s.title}`));
-    headers.push('Média geral','Status');
-
-    const avaliados = dados.filter(d => d.total !== null).sort((a,b) => b.total - a.total);
-    const posMap = {};
-    avaliados.forEach((d, i) => posMap[d.id] = i + 1);
-
-    const linhas = dados
-      .sort((a, b) => (b.total || -1) - (a.total || -1))
-      .map(c => {
-        const pos = posMap[c.id] || '—';
-        const data = c.submittedAt ? new Date(c.submittedAt.seconds * 1000).toLocaleDateString('pt-BR') : '—';
-        const tempo = c.timeUsed ? formatarTempo(c.timeUsed) : '—';
-        const notasCenario = processo.scenarios.map((s, si) => {
-          if (!c.avaliacao?.scores) return '—';
-          const notas = c.avaliacao.scores.filter(sc => sc.si === si);
-          if (notas.length === 0) return '—';
-          return (notas.reduce((a,b) => a + b.score, 0) / notas.length).toFixed(1);
+    let pos = 0;
+    const linhas = dados.map((c, i) => {
+      if (c.total100 !== null) pos++;
+      const row = [c.total100 !== null ? pos : '—', c.name, c.email];
+      scs.forEach((sc, si) => {
+        let sub = 0, max = sc.questions.length * 5, cnt = 0;
+        sc.questions.forEach((q, qi) => {
+          const s = c.avaliacao?.scores?.find(s => s.si === si && s.qi === qi)?.score;
+          row.push(s != null ? s : '—');
+          if (s != null) { sub += s; cnt++; }
         });
-        const media = c.total !== null ? c.total.toFixed(1) : '—';
-        const status = c.avaliacao ? 'Avaliado' : 'Pendente';
-        return [pos, c.name, c.email, data, tempo, ...notasCenario, media, status];
+        row.push(cnt > 0 ? `${sub}/${max}` : '—');
       });
+      row.push(c.total100 != null ? c.total100 : '—');
+      return row;
+    });
 
-    const csv = [headers, ...linhas]
-      .map(row => row.map(v => `"${String(v).replace(/"/g,'""')}"`).join(','))
-      .join('\n');
-
-    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
+    const csv = [headers, ...linhas].map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
-    a.download = `ranking-${processo.title.replace(/\s+/g,'-').toLowerCase()}.csv`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    a.href = url; a.download = `ranking-${processo.title.replace(/\s+/g,'-').toLowerCase()}.csv`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
-
-  function formatarTempo(secs) {
-    const h = Math.floor(secs / 3600), m = Math.floor((secs % 3600) / 60);
-    return h > 0 ? `${h}h ${m}min` : `${m} min`;
-  }
 
   function esc(str) {
     return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
