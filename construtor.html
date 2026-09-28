@@ -110,6 +110,8 @@
   .nota-input{background:rgba(0,0,0,0.2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--white);font-size:13px;font-family:'Inter',sans-serif;outline:none;width:100%;transition:border-color .2s}
   .nota-input:focus{border-color:var(--green)}
   .nota-input::placeholder{color:var(--t1)}
+  .btn-sugerir{background:rgba(147,245,116,0.07);border:1px solid var(--border2);border-radius:8px;padding:7px 14px;font-size:12px;color:var(--green);font-family:'Inter',sans-serif;cursor:pointer;transition:all .15s;white-space:nowrap;flex-shrink:0}
+  .btn-sugerir:hover{background:rgba(147,245,116,0.14)}
 
   /* ── FOOTER FIXO ── */
   .footer-bar{position:fixed;bottom:0;left:0;right:0;background:var(--dark);border-top:1px solid var(--border);padding:14px 48px;display:flex;justify-content:space-between;align-items:center;z-index:10}
@@ -357,17 +359,21 @@
       <p class="sec-sub">Para cada pergunta, defina o que caracteriza cada nota de 1 a 5. Isso vai aparecer ao lado das respostas dos candidatos na hora de avaliar.</p>
       ${todasPergs.map(({si, qi, title, text, criteria}) => `
         <div class="criterio-block">
-          <div class="criterio-header">
-            <div class="criterio-perg-num">Cenário ${si+1} — ${esc(title || 'Sem título')} · Pergunta ${qi+1}</div>
-            <div class="criterio-perg-txt">${esc(text || 'Pergunta sem texto')}</div>
+          <div class="criterio-header" style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px">
+            <div>
+              <div class="criterio-perg-num">Cenário ${si+1} — ${esc(title || 'Sem título')} · Pergunta ${qi+1}</div>
+              <div class="criterio-perg-txt">${esc(text || 'Pergunta sem texto')}</div>
+            </div>
+            <button class="btn-sugerir" onclick="sugerirCriterios(${si},${qi})">✨ Sugerir critérios</button>
           </div>
-          <div class="criterio-notas">
+          <div class="criterio-notas" id="notas-${si}-${qi}">
             ${[1,2,3,4,5].map(n => {
               const val = criteria.find(c => c.score === n)?.description || '';
               return `
                 <div class="nota-row">
                   <div class="nota-label nota-${n}">${n}</div>
                   <input class="nota-input" type="text"
+                    id="crit-${si}-${qi}-${n}"
                     placeholder="${placeholderNota(n)}"
                     value="${esc(val)}"
                     oninput="salvarCriterio(${si},${qi},${n},this.value)">
@@ -387,6 +393,24 @@
     };
     return p[n];
   }
+
+  // Critérios sugeridos genéricos
+  const CRITERIOS_SUGERIDOS = {
+    1: 'Resposta muito superficial ou fora do contexto, sem demonstrar compreensão do problema.',
+    2: 'Identifica o problema mas a abordagem é incompleta, confusa ou sem justificativa.',
+    3: 'Resposta adequada com raciocínio claro e organizado, atende ao esperado para a vaga.',
+    4: 'Resposta completa, bem estruturada, com exemplos práticos e boa comunicação.',
+    5: 'Resposta excepcional — demonstra domínio total, visão estratégica e proatividade.'
+  };
+
+  window.sugerirCriterios = function(si, qi) {
+    const btn = document.querySelector(`[onclick="sugerirCriterios(${si},${qi})"]`);
+    if (btn) { btn.textContent = '✓ Aplicado!'; btn.style.color = 'var(--green)'; setTimeout(() => { btn.textContent = '✨ Sugerir critérios'; btn.style.color = ''; }, 2000); }
+    [1,2,3,4,5].forEach(n => {
+      const input = document.getElementById(`crit-${si}-${qi}-${n}`);
+      if (input) { input.value = CRITERIOS_SUGERIDOS[n]; salvarCriterio(si, qi, n, CRITERIOS_SUGERIDOS[n]); }
+    });
+  };
 
   window.salvarCriterio = function(si, qi, score, desc) {
     if (!dados.scenarios[si]?.questions[qi]) return;
