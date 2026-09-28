@@ -452,8 +452,12 @@
 
   function coletarDadosEtapa2() {
     dados.scenarios.forEach((sc, si) => {
-      sc.title   = document.getElementById(`sc-title-${si}`)?.value || sc.title;
-      sc.context = document.getElementById(`sc-ctx-${si}`)?.value   || sc.context;
+      sc.title   = document.getElementById(`sc-title-${si}`)?.value ?? sc.title;
+      sc.context = document.getElementById(`sc-ctx-${si}`)?.value   ?? sc.context;
+      sc.questions.forEach((q, qi) => {
+        const el = document.getElementById(`pq-${si}-${qi}`)?.querySelector('textarea');
+        if (el) q.text = el.value;
+      });
     });
   }
 
