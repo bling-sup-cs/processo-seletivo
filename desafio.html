@@ -404,13 +404,22 @@
     const hu = Math.floor(used / 3600), mu = Math.floor((used % 3600) / 60);
     const timeStr = hu > 0 ? `${hu}h ${mu}min` : `${mu} min`;
 
+    // Firestore nao suporta arrays dentro de arrays — achata em objeto chaveado
+    const answersFlat = {};
+    ans.forEach((cenario, si) => {
+      cenario.forEach((resp, qi) => {
+        answersFlat['c' + si + '_q' + qi] = resp || '';
+      });
+    });
+
     try {
       await addDoc(collection(db, 'processes', processId, 'submissions'), {
         name: uName,
         email: uEmail.toLowerCase(),
         submittedAt: serverTimestamp(),
         timeUsed: used,
-        answers: ans,
+        answers: answersFlat,
+        answersShape: ans.map(c => c.length),
         processTitle: processo.title,
       });
       limparSessao();
