@@ -335,7 +335,7 @@
           </div>
           <div class="cenario-titulo">${esc(sc.title)}</div>
           ${sc.questions.map((q, qi) => {
-            const resposta = c.answers?.[si]?.[qi] || '';
+            const resposta = c.answers?.['c' + si + '_q' + qi] || c.answers?.[si]?.[qi] || '';
             const notaSelecionada = scoresAtual[`${si}-${qi}`] || 0;
             return `
               <div class="perg-avalia">
