@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bling Seletivo — Avaliação</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --dark:#002726;--green:#93F574;--t1:#40615E;--t2:#678A88;
+    --mist:#B9C9C9;--white:#FFFFFF;--card:#03302F;--card2:#042F2E;
+    --border:rgba(147,245,116,0.15);--border2:rgba(147,245,116,0.3);
+    --yellow:#F6C343;--red:#E55B5B;
+  }
+  html,body{height:100%;font-family:'Inter',sans-serif;background:var(--dark);color:var(--white);-webkit-font-smoothing:antialiased;overflow:hidden}
+
+  /* ── HEADER ── */
+  .hdr{height:68px;padding:0 48px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--dark);z-index:10}
+  .logo-area{display:flex;align-items:center;gap:12px}
+  .logo-mark{width:32px;height:32px;background:var(--green);border-radius:8px;display:flex;align-items:center;justify-content:center}
+  .logo-mark svg{width:18px;height:18px}
+  .logo-name{font-size:15px;font-weight:600}
+  .logo-name span{color:var(--green)}
+  .hdr-center{font-size:13px;color:var(--t2);text-align:center}
+  .hdr-center strong{color:var(--white);display:block;font-size:14px}
+  .hdr-right{display:flex;align-items:center;gap:10px}
+  .btn-s{background:transparent;color:var(--mist);border:1px solid var(--border);border-radius:10px;padding:8px 16px;font-size:13px;font-family:'Inter',sans-serif;cursor:pointer;transition:all .15s}
+  .btn-s:hover{border-color:var(--t2);color:var(--white)}
+  .btn-p{background:var(--green);color:var(--dark);border:none;border-radius:10px;padding:8px 18px;font-size:13px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;transition:opacity .2s}
+  .btn-p:hover{opacity:.88}
+
+  /* ── LAYOUT ── */
+  .layout{display:grid;grid-template-columns:280px 1fr;height:calc(100vh - 68px);overflow:hidden}
+
+  /* ── SIDEBAR ── */
+  .sbar{background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+  .sbar-header{padding:20px 18px 14px;border-bottom:1px solid var(--border);flex-shrink:0}
+  .sbar-title{font-size:11px;color:var(--t2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+  .search-box{background:rgba(0,0,0,0.2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;display:flex;align-items:center;gap:8px}
+  .search-box input{background:transparent;border:none;color:var(--white);font-size:13px;font-family:'Inter',sans-serif;outline:none;width:100%}
+  .search-box input::placeholder{color:var(--t1)}
+  .sbar-list{flex:1;overflow-y:auto;padding:12px 10px}
+  .cand-btn{width:100%;background:transparent;border:1px solid transparent;border-radius:10px;padding:12px 14px;text-align:left;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;margin-bottom:4px}
+  .cand-btn:hover{background:rgba(147,245,116,0.05);border-color:var(--border)}
+  .cand-btn.active{background:rgba(147,245,116,0.09);border-color:var(--border2)}
+  .cand-name{font-size:13px;font-weight:500;color:var(--white);margin-bottom:3px}
+  .cand-email{font-size:11px;color:var(--t2)}
+  .cand-status{font-size:11px;margin-top:5px;display:flex;align-items:center;gap:5px}
+  .dot-avaliado{color:var(--green)}
+  .dot-pendente{color:var(--t2)}
+  .sbar-footer{padding:14px 18px;border-top:1px solid var(--border);flex-shrink:0}
+  .sbar-stats{display:flex;gap:16px}
+  .sbar-stat{font-size:12px;color:var(--t2)}
+  .sbar-stat strong{color:var(--white);display:block;font-size:16px;font-weight:600}
+
+  /* ── MAIN ── */
+  .main{display:flex;flex-direction:column;overflow:hidden}
+  .main-scroll{flex:1;overflow-y:auto;padding:28px 36px}
+
+  /* ── EMPTY STATE ── */
+  .empty-state{flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;text-align:center;padding:40px;color:var(--t2)}
+  .empty-state p{font-size:14px;max-width:320px;line-height:1.6}
+
+  /* ── CANDIDATO HEADER ── */
+  .cand-header{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 24px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+  .cand-info h2{font-size:18px;font-weight:600;margin-bottom:4px}
+  .cand-info p{font-size:13px;color:var(--t2)}
+  .cand-score-big{text-align:right}
+  .score-num{font-size:32px;font-weight:700;color:var(--green);line-height:1}
+  .score-label{font-size:12px;color:var(--t2);margin-top:2px}
+
+  /* ── CENÁRIO BLOCK ── */
+  .cenario-block{margin-bottom:28px}
+  .cenario-label{font-size:11px;color:var(--green);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+  .cenario-titulo{font-size:16px;font-weight:600;margin-bottom:16px}
+
+  /* ── PERGUNTA AVALIACAO ── */
+  .perg-avalia{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden}
+  .perg-avalia-top{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;gap:10px}
+  .perg-num{width:24px;height:24px;border-radius:50%;background:rgba(147,245,116,0.1);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--green);flex-shrink:0;margin-top:1px}
+  .perg-txt{font-size:13px;color:var(--white);font-weight:500;line-height:1.5}
+  .perg-body{display:grid;grid-template-columns:1fr 1fr;gap:0}
+  .perg-col{padding:16px 20px}
+  .perg-col:first-child{border-right:1px solid var(--border)}
+  .col-label{font-size:11px;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px}
+  .resp-txt{font-size:13px;color:var(--mist);line-height:1.75;white-space:pre-wrap;min-height:60px}
+  .resp-vazio{font-size:13px;color:var(--t1);font-style:italic}
+
+  /* ── NOTAS ── */
+  .notas-grid{display:flex;flex-direction:column;gap:6px}
+  .nota-row{display:flex;gap:8px;align-items:flex-start;padding:6px 8px;border-radius:8px;cursor:pointer;transition:background .15s;border:1px solid transparent}
+  .nota-row:hover{background:rgba(147,245,116,0.04);border-color:var(--border)}
+  .nota-row.selected{background:rgba(147,245,116,0.08);border-color:var(--border2)}
+  .nota-badge{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+  .n1{background:rgba(229,91,91,0.15);color:#E55B5B}
+  .n2{background:rgba(246,195,67,0.15);color:#F6C343}
+  .n3{background:rgba(103,138,136,0.2);color:var(--mist)}
+  .n4{background:rgba(100,200,150,0.15);color:#64C896}
+  .n5{background:rgba(147,245,116,0.15);color:var(--green)}
+  .nota-desc{font-size:12px;color:var(--t2);line-height:1.5;padding-top:5px;flex:1}
+  .nota-desc.placeholder{font-style:italic;color:var(--t1)}
+
+  /* ── FOOTER ── */
+  .main-footer{padding:14px 36px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:var(--dark)}
+  .save-status{font-size:12px;color:var(--t2);display:flex;align-items:center;gap:6px}
+  .save-dot{width:6px;height:6px;border-radius:50%;background:var(--t2)}
+  .save-dot.saved{background:var(--green)}
+
+  /* ── LOADING ── */
+  .loading{flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px}
+  .loading-dots{display:flex;gap:6px}
+  .loading-dots span{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.2s ease-in-out infinite}
+  .loading-dots span:nth-child(2){animation-delay:.2s}
+  .loading-dots span:nth-child(3){animation-delay:.4s}
+  @keyframes pulse{0%,100%{opacity:.2}50%{opacity:1}}
+
+  @media(max-width:900px){
+    .layout{grid-template-columns:1fr}
+    .sbar{display:none}
+    .perg-body{grid-template-columns:1fr}
+    .perg-col:first-child{border-right:none;border-bottom:1px solid var(--border)}
+    .hdr{padding:0 20px}
+    .main-scroll{padding:20px}
+    .main-footer{padding:12px 20px}
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="logo-area">
+    <div class="logo-mark">
+      <svg viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="6" height="6" rx="1.5" fill="#002726"/><rect x="10" y="2" width="6" height="6" rx="1.5" fill="#002726"/><rect x="2" y="10" width="6" height="6" rx="1.5" fill="#002726"/><rect x="10" y="10" width="6" height="6" rx="1.5" fill="#002726" opacity=".4"/></svg>
+    </div>
+    <span class="logo-name">Bling <span>Seletivo</span></span>
+  </div>
+  <div class="hdr-center">
+    <strong id="hdr-titulo">Avaliação</strong>
+    <span id="hdr-sub">carregando…</span>
+  </div>
+  <div class="hdr-right">
+    <button class="btn-s" onclick="window.location.href='painel.html'">← Painel</button>
+    <button class="btn-p" onclick="window.location.href='ranking.html?p='+processId">📊 Ver ranking</button>
+  </div>
+</header>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sbar">
+    <div class="sbar-header">
+      <div class="sbar-title">Candidatos</div>
+      <div class="search-box">
+        <span style="color:var(--t2);font-size:13px">🔍</span>
+        <input type="text" id="search-input" placeholder="Buscar candidato…" oninput="filtrarCandidatos(this.value)">
+      </div>
+    </div>
+    <div class="sbar-list" id="sbar-list">
+      <div class="loading" style="padding:40px 0">
+        <div class="loading-dots"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+    <div class="sbar-footer">
+      <div class="sbar-stats">
+        <div class="sbar-stat"><strong id="stat-total">—</strong>candidatos</div>
+        <div class="sbar-stat"><strong id="stat-aval" style="color:var(--green)">—</strong>avaliados</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="main-scroll" id="main-scroll">
+      <div class="empty-state">
+        <div style="font-size:40px">👈</div>
+        <p>Selecione um candidato na lista para começar a avaliação</p>
+      </div>
+    </div>
+    <div class="main-footer">
+      <div class="save-status">
+        <div class="save-dot" id="save-dot"></div>
+        <span id="save-txt">Selecione um candidato</span>
+      </div>
+      <button class="btn-p" id="btn-salvar" onclick="salvarAvaliacao()" style="display:none">💾 Salvar avaliação</button>
+    </div>
+  </div>
+
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc, collection, getDocs, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCxWXwMe3rE1zMSiIxmz5E34cc2BmyeGsw",
+    authDomain: "bling-seletivo.firebaseapp.com",
+    projectId: "bling-seletivo",
+    storageBucket: "bling-seletivo.firebasestorage.app",
+    messagingSenderId: "680949628238",
+    appId: "1:680949628238:web:6e74791e02b69a1333321f"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  window.processId = new URLSearchParams(window.location.search).get('p');
+  let processo = null;
+  let candidatos = [];
+  let avaliacoes = {};
+  let candidatoAtual = null;
+  let scoresAtual = {};
+
+  // ── GUARD ──
+  onAuthStateChanged(auth, async user => {
+    if (!user) { window.location.href = 'index.html'; return; }
+    if (!window.processId) { alert('Processo não especificado.'); window.location.href = 'painel.html'; return; }
+    await carregarTudo();
+  });
+
+  async function carregarTudo() {
+    try {
+      // Carrega processo
+      const pSnap = await getDoc(doc(db, 'processes', window.processId));
+      if (!pSnap.exists()) { alert('Processo não encontrado.'); window.location.href = 'painel.html'; return; }
+      processo = { id: pSnap.id, ...pSnap.data() };
+      document.getElementById('hdr-titulo').textContent = processo.title;
+      document.getElementById('hdr-sub').textContent = `${processo.role} · ${processo.area}`;
+
+      // Carrega submissões
+      const subSnap = await getDocs(collection(db, 'processes', window.processId, 'submissions'));
+      candidatos = [];
+      subSnap.forEach(d => candidatos.push({ id: d.id, ...d.data() }));
+      candidatos.sort((a, b) => (a.submittedAt?.seconds || 0) - (b.submittedAt?.seconds || 0));
+
+      // Carrega avaliações existentes
+      const evalSnap = await getDocs(collection(db, 'processes', window.processId, 'evaluations'));
+      evalSnap.forEach(d => avaliacoes[d.id] = d.data());
+
+      renderSidebar(candidatos);
+      atualizarStats();
+    } catch(e) {
+      console.error(e);
+      document.getElementById('sbar-list').innerHTML = `<p style="padding:20px;font-size:13px;color:var(--red)">Erro: ${e.message}</p>`;
+    }
+  }
+
+  function renderSidebar(lista) {
+    const el = document.getElementById('sbar-list');
+    if (lista.length === 0) {
+      el.innerHTML = `<p style="font-size:13px;color:var(--t2);text-align:center;padding:32px 16px;line-height:1.6">Nenhum candidato enviou respostas ainda.</p>`;
+      return;
+    }
+    el.innerHTML = lista.map(c => {
+      const avaliado = !!avaliacoes[c.id];
+      const ativo = candidatoAtual?.id === c.id;
+      return `
+        <button class="cand-btn ${ativo ? 'active' : ''}" id="cb-${c.id}" onclick="selecionarCandidato('${c.id}')">
+          <div class="cand-name">${esc(c.name)}</div>
+          <div class="cand-email">${esc(c.email)}</div>
+          <div class="cand-status">
+            ${avaliado
+              ? `<span class="dot-avaliado">✓ Avaliado</span><span style="color:var(--t2)">· Nota ${avaliacoes[c.id].total?.toFixed(1) || '—'}</span>`
+              : `<span class="dot-pendente">○ Pendente</span>`}
+          </div>
+        </button>`;
+    }).join('');
+  }
+
+  window.filtrarCandidatos = function(termo) {
+    const filtrados = candidatos.filter(c =>
+      c.name.toLowerCase().includes(termo.toLowerCase()) ||
+      c.email.toLowerCase().includes(termo.toLowerCase())
+    );
+    renderSidebar(filtrados);
+  };
+
+  function atualizarStats() {
+    document.getElementById('stat-total').textContent = candidatos.length;
+    document.getElementById('stat-aval').textContent = Object.keys(avaliacoes).length;
+  }
+
+  // ── SELECIONAR CANDIDATO ──
+  window.selecionarCandidato = function(id) {
+    candidatoAtual = candidatos.find(c => c.id === id);
+    if (!candidatoAtual) return;
+
+    scoresAtual = {};
+    const aval = avaliacoes[id];
+    if (aval?.scores) {
+      aval.scores.forEach(s => { scoresAtual[`${s.si}-${s.qi}`] = s.score; });
+    }
+
+    // Atualiza sidebar
+    document.querySelectorAll('.cand-btn').forEach(b => b.classList.remove('active'));
+    const btn = document.getElementById(`cb-${id}`);
+    if (btn) btn.classList.add('active');
+
+    renderAvaliacao();
+    document.getElementById('btn-salvar').style.display = 'block';
+    setSaveStatus('idle');
+  };
+
+  function renderAvaliacao() {
+    const c = candidatoAtual;
+    const totalScore = calcularMedia();
+    const scroll = document.getElementById('main-scroll');
+
+    const submittedAt = c.submittedAt
+      ? new Date(c.submittedAt.seconds * 1000).toLocaleDateString('pt-BR', {day:'2-digit',month:'long',hour:'2-digit',minute:'2-digit'})
+      : '—';
+    const tempo = c.timeUsed ? formatarTempo(c.timeUsed) : '—';
+
+    let html = `
+      <div class="cand-header">
+        <div class="cand-info">
+          <h2>${esc(c.name)}</h2>
+          <p>${esc(c.email)} · Enviado em ${submittedAt} · Tempo: ${tempo}</p>
+        </div>
+        <div class="cand-score-big">
+          <div class="score-num" id="score-display">${totalScore > 0 ? totalScore.toFixed(1) : '—'}</div>
+          <div class="score-label">média geral</div>
+        </div>
+      </div>`;
+
+    processo.scenarios.forEach((sc, si) => {
+      html += `
+        <div class="cenario-block">
+          <div class="cenario-label">
+            <span>Cenário ${String(si+1).padStart(2,'0')}</span>
+          </div>
+          <div class="cenario-titulo">${esc(sc.title)}</div>
+          ${sc.questions.map((q, qi) => {
+            const resposta = c.answers?.[si]?.[qi] || '';
+            const notaSelecionada = scoresAtual[`${si}-${qi}`] || 0;
+            return `
+              <div class="perg-avalia">
+                <div class="perg-avalia-top">
+                  <div class="perg-num">${qi+1}</div>
+                  <div class="perg-txt">${esc(q.text)}</div>
+                </div>
+                <div class="perg-body">
+                  <div class="perg-col">
+                    <div class="col-label">Resposta do candidato</div>
+                    ${resposta
+                      ? `<div class="resp-txt">${esc(resposta)}</div>`
+                      : `<div class="resp-vazio">Não respondeu esta pergunta.</div>`}
+                  </div>
+                  <div class="perg-col">
+                    <div class="col-label">Critérios de avaliação</div>
+                    <div class="notas-grid">
+                      ${[1,2,3,4,5].map(n => {
+                        const criterio = q.criteria?.find(cr => cr.score === n);
+                        const selecionado = notaSelecionada === n;
+                        return `
+                          <div class="nota-row ${selecionado ? 'selected' : ''}" id="nr-${si}-${qi}-${n}"
+                               onclick="selecionarNota(${si},${qi},${n})">
+                            <div class="nota-badge n${n}">${n}</div>
+                            <div class="nota-desc ${criterio ? '' : 'placeholder'}">
+                              ${criterio ? esc(criterio.description) : 'Critério não definido'}
+                            </div>
+                          </div>`;
+                      }).join('')}
+                    </div>
+                  </div>
+                </div>
+              </div>`;
+          }).join('')}
+        </div>`;
+    });
+
+    scroll.innerHTML = html;
+    scroll.scrollTo(0, 0);
+  }
+
+  window.selecionarNota = function(si, qi, nota) {
+    scoresAtual[`${si}-${qi}`] = nota;
+
+    // Atualiza visual
+    [1,2,3,4,5].forEach(n => {
+      const el = document.getElementById(`nr-${si}-${qi}-${n}`);
+      if (el) el.classList.toggle('selected', n === nota);
+    });
+
+    // Atualiza média
+    const media = calcularMedia();
+    const display = document.getElementById('score-display');
+    if (display) display.textContent = media > 0 ? media.toFixed(1) : '—';
+
+    setSaveStatus('unsaved');
+  };
+
+  function calcularMedia() {
+    const notas = Object.values(scoresAtual);
+    if (notas.length === 0) return 0;
+    return notas.reduce((a, b) => a + b, 0) / notas.length;
+  }
+
+  // ── SALVAR ──
+  window.salvarAvaliacao = async function() {
+    if (!candidatoAtual) return;
+    setSaveStatus('saving');
+
+    const scores = Object.entries(scoresAtual).map(([key, score]) => {
+      const [si, qi] = key.split('-').map(Number);
+      return { si, qi, score };
+    });
+    const total = calcularMedia();
+
+    try {
+      await setDoc(
+        doc(db, 'processes', window.processId, 'evaluations', candidatoAtual.id),
+        { evaluatorUid: auth.currentUser?.uid, scores, total, updatedAt: serverTimestamp() },
+        { merge: true }
+      );
+      avaliacoes[candidatoAtual.id] = { scores, total };
+      atualizarStats();
+      renderSidebar(candidatos);
+      // Reativa botão do candidato atual
+      const btn = document.getElementById(`cb-${candidatoAtual.id}`);
+      if (btn) btn.classList.add('active');
+      setSaveStatus('saved');
+    } catch(e) {
+      setSaveStatus('error');
+      alert('Erro ao salvar: ' + e.message);
+    }
+  };
+
+  function setSaveStatus(status) {
+    const dot = document.getElementById('save-dot');
+    const txt = document.getElementById('save-txt');
+    const map = {
+      idle:    { dot: '',        txt: 'Avaliação não salva ainda' },
+      unsaved: { dot: 'yellow',  txt: 'Alterações não salvas' },
+      saving:  { dot: '',        txt: 'Salvando…' },
+      saved:   { dot: 'saved',   txt: '✓ Avaliação salva' },
+      error:   { dot: 'red',     txt: 'Erro ao salvar' },
+    };
+    const s = map[status] || map.idle;
+    dot.className = `save-dot ${s.dot}`;
+    dot.style.background = status === 'unsaved' ? 'var(--yellow)' : status === 'error' ? 'var(--red)' : '';
+    txt.textContent = s.txt;
+  }
+
+  function formatarTempo(secs) {
+    const h = Math.floor(secs / 3600);
+    const m = Math.floor((secs % 3600) / 60);
+    return h > 0 ? `${h}h ${m}min` : `${m} min`;
+  }
+
+  function esc(str) {
+    return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+</script>
+
+</body>
+</html>
