@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Desafio Técnico — Bling Seletivo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --dark:#002726;--green:#93F574;--t1:#40615E;--t2:#678A88;
+    --mist:#B9C9C9;--mist2:#E3EBEB;--white:#FFFFFF;--card:#03302F;
+    --border:rgba(147,245,116,0.15);--border2:rgba(147,245,116,0.3);
+    --yellow:#F6C343;--red:#E55B5B;
+  }
+  html,body{height:100%;font-family:'Inter',sans-serif;background:var(--dark);color:var(--white);-webkit-font-smoothing:antialiased;overflow:hidden}
+
+  /* ── HEADER ── */
+  .hdr{height:68px;padding:0 48px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);flex-shrink:0}
+  .logo-area{display:flex;align-items:center;gap:12px}
+  .logo-mark{width:32px;height:32px;background:var(--green);border-radius:8px;display:flex;align-items:center;justify-content:center}
+  .logo-mark svg{width:18px;height:18px}
+  .logo-name{font-size:15px;font-weight:600}
+  .logo-name span{color:var(--green)}
+  .badge{font-size:12px;font-weight:500;color:var(--green);border:1px solid var(--border2);padding:5px 16px;border-radius:99px}
+
+  /* ── SCREENS ── */
+  .screen{display:none;height:calc(100vh - 68px);flex-direction:column}
+  .screen.active{display:flex}
+
+  /* ── LOADING ── */
+  .loading-screen{flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px}
+  .loading-dots{display:flex;gap:6px}
+  .loading-dots span{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 1.2s ease-in-out infinite}
+  .loading-dots span:nth-child(2){animation-delay:.2s}
+  .loading-dots span:nth-child(3){animation-delay:.4s}
+  @keyframes pulse{0%,100%{opacity:.2}50%{opacity:1}}
+
+  /* ── WELCOME ── */
+  .w-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px;text-align:center;overflow-y:auto}
+  .w-tag{font-size:13px;color:var(--t2);margin-bottom:20px;letter-spacing:.04em}
+  .w-title{font-size:40px;font-weight:600;line-height:1.15;margin-bottom:16px}
+  .w-title em{color:var(--green);font-style:normal}
+  .w-desc{font-size:15px;color:var(--mist);margin-bottom:36px;max-width:520px;line-height:1.7}
+  .info-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;width:100%;max-width:680px;margin-bottom:36px}
+  .info-item{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;text-align:left}
+  .il{font-size:11px;color:var(--t2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em}
+  .iv{font-size:15px;color:var(--white);font-weight:500}
+  .iv-sub{font-size:12px;color:var(--t2);margin-top:5px;line-height:1.5}
+  .btn-p{background:var(--green);color:var(--dark);border:none;border-radius:12px;padding:14px 36px;font-size:15px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;transition:opacity .2s}
+  .btn-p:hover{opacity:.88}
+  .btn-s{background:transparent;color:var(--mist);border:1px solid var(--border);border-radius:10px;padding:12px 24px;font-size:13px;font-family:'Inter',sans-serif;cursor:pointer;transition:all .15s}
+  .btn-s:hover{border-color:var(--t2);color:var(--white)}
+
+  /* ── EMAIL ── */
+  .e-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px;max-width:480px;margin:0 auto;text-align:center;width:100%}
+  .fg{width:100%;margin-bottom:14px;text-align:left}
+  .fg label{font-size:13px;color:var(--mist);margin-bottom:7px;display:block}
+  .fg input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px 16px;color:var(--white);font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s}
+  .fg input:focus{border-color:var(--green)}
+  .fg input::placeholder{color:var(--t1)}
+
+  /* ── CHALLENGE ── */
+  .c-layout{flex:1;display:grid;grid-template-columns:240px 1fr;overflow:hidden}
+  .sbar{background:var(--card);border-right:1px solid var(--border);padding:24px 18px;display:flex;flex-direction:column;gap:6px;overflow-y:auto}
+  .sbar-ttl{font-size:11px;color:var(--t2);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
+  .sbtn{background:transparent;border:1px solid transparent;border-radius:10px;padding:12px 13px;text-align:left;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif;width:100%}
+  .sbtn:hover{background:rgba(147,245,116,.05);border-color:var(--border)}
+  .sbtn.active{background:rgba(147,245,116,.09);border-color:var(--border2)}
+  .sn{font-size:11px;color:var(--t2);margin-bottom:2px}
+  .st{font-size:13px;color:var(--white);font-weight:500;line-height:1.4}
+  .sc{font-size:11px;color:var(--green);margin-top:3px}
+  .main{display:flex;flex-direction:column;overflow:hidden;height:100%}
+  .main-scroll{flex:1;overflow-y:auto;padding:28px 40px}
+  .main-footer{padding:14px 40px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:var(--dark)}
+  .sc-tag{font-size:12px;color:var(--green);letter-spacing:.04em;margin-bottom:8px}
+  .sc-title{font-size:22px;font-weight:600;margin-bottom:14px}
+  .ctx{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:18px}
+  .ctx-lbl{font-size:11px;color:var(--t2);letter-spacing:.05em;margin-bottom:8px;text-transform:uppercase}
+  .ctx-txt{font-size:13px;color:var(--mist);line-height:1.75}
+  .qs{display:flex;flex-direction:column;gap:16px}
+  .qlbl{font-size:13px;font-weight:500;color:var(--white);margin-bottom:8px;display:flex;gap:9px;line-height:1.5}
+  .qn{color:var(--green);font-weight:600;flex-shrink:0}
+  .ans{width:100%;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--white);font-size:13px;font-family:'Inter',sans-serif;outline:none;resize:none;height:90px;line-height:1.65;transition:border-color .2s}
+  .ans:focus{border-color:rgba(147,245,116,.45)}
+  .ans::placeholder{color:var(--t1)}
+  .warn-bar{font-size:12px;color:var(--yellow);display:flex;align-items:center;gap:6px}
+  .nr-r{display:flex;gap:10px}
+
+  /* ── FINISH ── */
+  .f-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px;text-align:center;max-width:560px;margin:0 auto;overflow-y:auto}
+  .sum{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;width:100%;text-align:left;margin-bottom:24px}
+  .sr{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+  .sr:last-child{border-bottom:none}
+  .sr span:first-child{color:var(--mist)}
+  .sr span:last-child{color:var(--white);font-weight:500}
+
+  /* ── MODAL ── */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:999;backdrop-filter:blur(4px)}
+  .modal{background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:36px;max-width:440px;width:90%;text-align:center}
+  .modal-icon{font-size:40px;margin-bottom:18px}
+  .modal-title{font-size:20px;font-weight:600;margin-bottom:12px}
+  .modal-desc{font-size:14px;color:var(--mist);margin-bottom:28px;line-height:1.65}
+  .modal-btns{display:flex;flex-direction:column;gap:10px}
+
+  /* ── ERROR ── */
+  .error-screen{flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;text-align:center;padding:40px}
+  .error-screen h2{font-size:22px;font-weight:600}
+  .error-screen p{font-size:14px;color:var(--t2);max-width:400px;line-height:1.65}
+
+  @media(max-width:640px){
+    .hdr{padding:0 20px}
+    .info-grid{grid-template-columns:1fr 1fr}
+    .c-layout{grid-template-columns:1fr}
+    .sbar{display:none}
+    .w-body,.e-body,.f-body{padding:28px 20px}
+    .main-scroll{padding:20px}
+    .main-footer{padding:12px 20px}
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="logo-area">
+    <div class="logo-mark">
+      <svg viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="6" height="6" rx="1.5" fill="#002726"/><rect x="10" y="2" width="6" height="6" rx="1.5" fill="#002726"/><rect x="2" y="10" width="6" height="6" rx="1.5" fill="#002726"/><rect x="10" y="10" width="6" height="6" rx="1.5" fill="#002726" opacity=".4"/></svg>
+    </div>
+    <span class="logo-name">Bling <span>Seletivo</span></span>
+  </div>
+  <span class="badge" id="hdr-badge">Processo Seletivo Interno</span>
+</header>
+
+<!-- LOADING -->
+<div class="screen active" id="s-loading">
+  <div class="loading-screen">
+    <div class="loading-dots"><span></span><span></span><span></span></div>
+    <p style="font-size:13px;color:var(--t2)">Carregando desafio…</p>
+  </div>
+</div>
+
+<!-- ERRO -->
+<div class="screen" id="s-error">
+  <div class="error-screen">
+    <div style="font-size:48px">⚠️</div>
+    <h2>Processo não encontrado</h2>
+    <p id="error-msg">O link pode estar incorreto ou o processo ainda não foi publicado.</p>
+  </div>
+</div>
+
+<!-- WELCOME -->
+<div class="screen" id="s-welcome">
+  <div class="w-body">
+    <p class="w-tag" id="w-area">Processo Seletivo Interno</p>
+    <h1 class="w-title" id="w-title">Desafio Técnico</h1>
+    <p class="w-desc" id="w-desc">Responda com calma. Não existe resposta certa ou errada — queremos entender como você raciocina, prioriza e se comunica.</p>
+    <div class="info-grid" id="w-grid"></div>
+    <button class="btn-p" onclick="show('s-email')">Começar</button>
+  </div>
+</div>
+
+<!-- EMAIL -->
+<div class="screen" id="s-email" style="position:relative">
+  <button onclick="show('s-welcome')" style="position:absolute;bottom:32px;left:32px;background:transparent;border:none;color:var(--green);font-size:14px;font-family:'Inter',sans-serif;cursor:pointer;display:flex;align-items:center;gap:6px;font-weight:500">← Voltar</button>
+  <div class="e-body">
+    <p style="font-size:12px;color:var(--t2);margin-bottom:14px;letter-spacing:.05em">Antes de começar</p>
+    <h2 style="font-size:26px;font-weight:600;margin-bottom:10px">Suas informações</h2>
+    <p style="font-size:14px;color:var(--mist);margin-bottom:26px">Suas respostas serão salvas com seu e-mail para identificação.</p>
+    <div class="fg"><label>Nome completo</label><input type="text" id="inp-name" placeholder="Seu nome completo"></div>
+    <div class="fg">
+      <label>E-mail corporativo <span style="color:var(--t2);font-weight:400">(@bling.com.br)</span></label>
+      <input type="email" id="inp-email" placeholder="seu@bling.com.br" onkeydown="if(event.key==='Enter')iniciarDesafio()">
+      <p id="e-err" style="font-size:12px;color:var(--red);margin-top:5px;display:none"></p>
+    </div>
+    <button class="btn-p" onclick="iniciarDesafio()" style="width:100%;margin-top:10px">Iniciar o desafio</button>
+  </div>
+</div>
+
+<!-- CHALLENGE -->
+<div class="screen" id="s-challenge">
+  <div class="c-layout">
+    <aside class="sbar" id="sbar"></aside>
+    <div class="main">
+      <div class="main-scroll" id="main-scroll"></div>
+      <div class="main-footer">
+        <span class="warn-bar">⚠️ Não feche esta aba. Progresso salvo automaticamente.</span>
+        <div class="nr-r" id="nav-btns"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FINISH -->
+<div class="screen" id="s-finish">
+  <div class="f-body">
+    <div style="font-size:44px;color:var(--green);margin-bottom:20px">✦</div>
+    <h2 style="font-size:32px;font-weight:600;margin-bottom:10px">Desafio <span style="color:var(--green)">concluído</span></h2>
+    <p style="font-size:14px;color:var(--mist);margin-bottom:8px;max-width:400px">Suas respostas foram registradas com sucesso.</p>
+    <p style="font-size:13px;color:var(--t2);margin-bottom:28px">⚠️ Não é possível editar ou reenviar suas respostas.</p>
+    <div class="sum" id="sum"></div>
+    <p style="font-size:12px;color:var(--t2)">Dúvidas? Entre em contato com o RH.</p>
+  </div>
+</div>
+
+<!-- MODAL CONFIRMAÇÃO -->
+<div class="modal-overlay" id="modal-confirm" style="display:none">
+  <div class="modal">
+    <div class="modal-icon">📋</div>
+    <h3 class="modal-title">Confirmar envio</h3>
+    <p class="modal-desc">Ao confirmar, suas respostas serão enviadas e <strong>não será possível editar</strong> ou enviar novamente.</p>
+    <div class="modal-btns">
+      <button class="btn-p" onclick="confirmarEnvio()">Sim, enviar minhas respostas</button>
+      <button class="btn-s" onclick="document.getElementById('modal-confirm').style.display='none'">Voltar e revisar</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, doc, getDoc, collection, query, where, getDocs, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCxWXwMe3rE1zMSiIxmz5E34cc2BmyeGsw",
+    authDomain: "bling-seletivo.firebaseapp.com",
+    projectId: "bling-seletivo",
+    storageBucket: "bling-seletivo.firebasestorage.app",
+    messagingSenderId: "680949628238",
+    appId: "1:680949628238:web:6e74791e02b69a1333321f"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const STORAGE_KEY = 'bling_seletivo_session';
+  let processo = null;
+  let processId = new URLSearchParams(window.location.search).get('p');
+  let uName = '', uEmail = '', cur = 0, done = false, startedAt = null;
+  let ans = [];
+
+  // ── CARREGAR PROCESSO ──
+  async function init() {
+    if (!processId) { mostrarErro('Link inválido — nenhum processo especificado.'); return; }
+    try {
+      const snap = await getDoc(doc(db, 'processes', processId));
+      if (!snap.exists() || snap.data().status !== 'published') {
+        mostrarErro('Este processo não está disponível. Verifique com o RH se o link está correto.');
+        return;
+      }
+      processo = { id: snap.id, ...snap.data() };
+      ans = processo.scenarios.map(s => s.questions.map(() => ''));
+
+      // Verificar sessão salva
+      const session = carregarSessao();
+      if (session && session.processId === processId && session.startedAt) {
+        uName = session.name;
+        uEmail = session.email;
+        startedAt = session.startedAt;
+        ans = session.answers || ans;
+        cur = session.cur || 0;
+        renderWelcome();
+        show('s-challenge');
+        renderCenario(cur);
+        return;
+      }
+
+      renderWelcome();
+      show('s-welcome');
+    } catch(e) {
+      mostrarErro('Erro ao carregar o processo: ' + e.message);
+    }
+  }
+
+  function mostrarErro(msg) {
+    document.getElementById('error-msg').textContent = msg;
+    show('s-error');
+  }
+
+  function renderWelcome() {
+    const sc = processo.scenarios;
+    const prazo = processo.deadline
+      ? new Date(processo.deadline.seconds * 1000).toLocaleDateString('pt-BR', {day:'2-digit',month:'long'})
+      : 'Definido pelo RH';
+
+    document.getElementById('w-area').textContent = `${processo.area || 'Processo Seletivo'} · ${processo.role || ''}`;
+    document.getElementById('w-title').innerHTML = `Desafio Técnico<br><em>${processo.title}</em>`;
+    document.getElementById('hdr-badge').textContent = processo.title;
+
+    document.getElementById('w-grid').innerHTML = `
+      <div class="info-item"><div class="il">Tempo</div><div class="iv">Livre</div><div class="iv-sub">Sem limite de tempo — responda com calma.</div></div>
+      <div class="info-item"><div class="il">Cenários</div><div class="iv">${sc.length} cenário${sc.length !== 1 ? 's' : ''}</div><div class="iv-sub">Situações reais do dia a dia.</div></div>
+      <div class="info-item"><div class="il">Prazo</div><div class="iv">${prazo}</div><div class="iv-sub">Envie antes desta data.</div></div>
+      <div class="info-item"><div class="il">Respostas</div><div class="iv">Ao enviar</div><div class="iv-sub">Salvas apenas após o envio final.</div></div>`;
+  }
+
+  // ── INICIAR ──
+  window.iniciarDesafio = async function() {
+    const n = document.getElementById('inp-name').value.trim();
+    const e = document.getElementById('inp-email').value.trim();
+    const err = document.getElementById('e-err');
+
+    err.style.display = 'none';
+    if (!n || !e || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) {
+      err.textContent = 'Preencha nome e e-mail válidos.';
+      err.style.display = 'block'; return;
+    }
+    if (!e.toLowerCase().endsWith('@bling.com.br')) {
+      err.textContent = 'Use seu e-mail corporativo @bling.com.br.';
+      err.style.display = 'block'; return;
+    }
+
+    // Verificar se já enviou
+    try {
+      const q = query(collection(db, 'processes', processId, 'submissions'), where('email', '==', e.toLowerCase()));
+      const snap = await getDocs(q);
+      if (!snap.empty) {
+        err.textContent = 'Você já enviou suas respostas para este processo.';
+        err.style.display = 'block'; return;
+      }
+    } catch(ex) {}
+
+    uName = n; uEmail = e; startedAt = Date.now();
+    salvarSessao();
+    show('s-challenge');
+    renderCenario(0);
+  };
+
+  // ── RENDER CENÁRIO ──
+  function renderCenario(i) {
+    cur = i;
+    salvarSessao();
+    const sc = processo.scenarios[i];
+    const total = processo.scenarios.length;
+
+    // Sidebar
+    const sbar = document.getElementById('sbar');
+    sbar.innerHTML = `<p class="sbar-ttl">Cenários</p>` +
+      processo.scenarios.map((s, idx) => `
+        <button class="sbtn ${idx === i ? 'active' : ''}" id="nb-${idx}" onclick="irPara(${idx})">
+          <div class="sn">Cenário ${String(idx+1).padStart(2,'0')}</div>
+          <div class="st">${esc(s.title)}</div>
+          <div class="sc" id="ck-${idx}">${ans[idx]?.some(v => v.trim()) ? '✓ Respondido' : ''}</div>
+        </button>`).join('');
+
+    // Conteúdo
+    const scroll = document.getElementById('main-scroll');
+    scroll.innerHTML = `
+      <p class="sc-tag">Cenário ${String(i+1).padStart(2,'0')} de ${total}</p>
+      <h2 class="sc-title">${esc(sc.title)}</h2>
+      <div class="ctx">
+        <p class="ctx-lbl">Situação</p>
+        <p class="ctx-txt">${esc(sc.context).replace(/\n/g,'<br>')}</p>
+      </div>
+      <div class="qs">
+        ${sc.questions.map((q, qi) => `
+          <div>
+            <p class="qlbl"><span class="qn">${qi+1}.</span><span>${esc(q.text)}</span></p>
+            <textarea class="ans" id="a${i}-${qi}" placeholder="Escreva sua resposta aqui…"
+              oninput="salvarResposta(${i},${qi},this.value)">${esc(ans[i]?.[qi] || '')}</textarea>
+          </div>`).join('')}
+      </div>`;
+
+    scroll.scrollTo(0, 0);
+
+    // Nav buttons
+    const nav = document.getElementById('nav-btns');
+    nav.innerHTML =
+      (i > 0 ? `<button class="btn-s" onclick="irPara(${i-1})">← Anterior</button>` : '') +
+      (i < total - 1
+        ? `<button class="btn-p" onclick="irPara(${i+1})">Próximo →</button>`
+        : `<button class="btn-p" onclick="document.getElementById('modal-confirm').style.display='flex'">Finalizar desafio</button>`);
+  }
+
+  window.irPara = function(i) {
+    atualizarCk(cur);
+    renderCenario(i);
+  };
+
+  window.salvarResposta = function(si, qi, val) {
+    if (!ans[si]) ans[si] = [];
+    ans[si][qi] = val;
+    clearTimeout(window._saveT);
+    window._saveT = setTimeout(salvarSessao, 500);
+  };
+
+  function atualizarCk(i) {
+    const el = document.getElementById(`ck-${i}`);
+    if (el) el.textContent = ans[i]?.some(v => v.trim()) ? '✓ Respondido' : '';
+  }
+
+  // ── ENVIAR ──
+  window.confirmarEnvio = async function() {
+    document.getElementById('modal-confirm').style.display = 'none';
+    if (done) return;
+    done = true;
+
+    // Atualiza todas as respostas da tela atual
+    processo.scenarios[cur].questions.forEach((_, qi) => {
+      const el = document.getElementById(`a${cur}-${qi}`);
+      if (el) ans[cur][qi] = el.value;
+    });
+
+    const used = Math.floor((Date.now() - startedAt) / 1000);
+    const hu = Math.floor(used / 3600), mu = Math.floor((used % 3600) / 60);
+    const timeStr = hu > 0 ? `${hu}h ${mu}min` : `${mu} min`;
+
+    try {
+      await addDoc(collection(db, 'processes', processId, 'submissions'), {
+        name: uName,
+        email: uEmail.toLowerCase(),
+        submittedAt: serverTimestamp(),
+        timeUsed: used,
+        answers: ans,
+        processTitle: processo.title,
+      });
+      limparSessao();
+      mostrarFinish(timeStr);
+    } catch(e) {
+      done = false;
+      alert('Erro ao enviar: ' + e.message + '\nTente novamente.');
+    }
+  };
+
+  function mostrarFinish(timeStr) {
+    let h = `
+      <div class="sr"><span>Candidato</span><span>${esc(uName)}</span></div>
+      <div class="sr"><span>E-mail</span><span>${esc(uEmail)}</span></div>
+      <div class="sr"><span>Tempo utilizado</span><span>${timeStr}</span></div>`;
+    processo.scenarios.forEach((s, i) => {
+      const resp = ans[i]?.some(v => v.trim());
+      h += `<div class="sr"><span>Cenário ${i+1} — ${esc(s.title)}</span><span style="color:${resp?'var(--green)':'var(--t2)'}">${resp?'✓ Respondido':'— Não respondido'}</span></div>`;
+    });
+    document.getElementById('sum').innerHTML = h;
+    show('s-finish');
+  }
+
+  // ── SESSÃO LOCAL ──
+  function salvarSessao() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        processId, name: uName, email: uEmail,
+        startedAt, answers: ans, cur
+      }));
+    } catch(e) {}
+  }
+  function carregarSessao() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); } catch(e) { return null; }
+  }
+  function limparSessao() {
+    try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
+  }
+
+  // ── UTILS ──
+  window.show = function(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  };
+  function esc(str) {
+    return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  init();
+</script>
+
+</body>
+</html>
