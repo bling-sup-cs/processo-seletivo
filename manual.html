@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manual do Coordenador - Bling Seletivo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--dark:#002726;--green:#93F574;--t1:#40615E;--t2:#678A88;--mist:#B9C9C9;--white:#FFFFFF;--card:#03302F;--border:rgba(147,245,116,0.15);--border2:rgba(147,245,116,0.3);--yellow:#F6C343;}
+html{background:var(--dark);font-family:'Inter',sans-serif;color:var(--white);-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{max-width:800px;margin:0 auto;padding:0 32px 100px}
+.hdr{padding:40px 0 32px;border-bottom:1px solid var(--border);margin-bottom:56px}
+.hdr-badge{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--green);border:1px solid var(--border2);padding:5px 14px;border-radius:99px;margin-bottom:20px}
+.hdr h1{font-size:36px;font-weight:700;line-height:1.2;margin-bottom:12px}
+.hdr h1 em{color:var(--green);font-style:normal}
+.hdr p{font-size:15px;color:var(--mist);line-height:1.7;max-width:600px}
+.hdr-meta{display:flex;gap:24px;margin-top:20px;flex-wrap:wrap}
+.hdr-meta span{font-size:12px;color:var(--t2)}
+.hdr-meta strong{color:var(--mist);font-weight:500}
+.toc{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px 28px;margin-bottom:56px}
+.toc-title{font-size:12px;color:var(--t2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:16px}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:4px}
+.toc-list a{font-size:13px;color:var(--mist);text-decoration:none;display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);transition:color .15s}
+.toc-list a:hover{color:var(--green)}
+.toc-list li:last-child a{border-bottom:none}
+.toc-list .n{font-size:11px;color:var(--green);font-weight:600;min-width:22px}
+section{margin-bottom:64px;scroll-margin-top:32px}
+h2{font-size:22px;font-weight:600;margin-bottom:6px;padding-bottom:12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+h2 .ico{font-size:20px}
+h3{font-size:14px;font-weight:600;color:var(--green);margin-bottom:10px;margin-top:28px;text-transform:uppercase;letter-spacing:.04em}
+p{font-size:14px;color:var(--mist);line-height:1.8;margin-bottom:12px}
+strong{color:var(--white);font-weight:600}
+.steps{display:flex;flex-direction:column;gap:0;margin:20px 0}
+.step{display:flex;gap:20px;position:relative}
+.step-left{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+.step-num{width:36px;height:36px;border-radius:50%;background:var(--green);color:var(--dark);font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;z-index:1}
+.step-line{width:2px;flex:1;background:var(--border);min-height:16px;margin:2px 0}
+.step:last-child .step-line{display:none}
+.step-body{padding-bottom:28px;flex:1}
+.step-title{font-size:15px;font-weight:600;margin-top:6px;margin-bottom:6px}
+.step-desc{font-size:13px;color:var(--mist);line-height:1.75}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 22px;margin-bottom:12px}
+.card-title{font-size:14px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.card-desc{font-size:13px;color:var(--mist);line-height:1.7}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+.highlight{background:rgba(147,245,116,0.06);border-left:3px solid var(--green);padding:14px 18px;border-radius:0 10px 10px 0;margin:16px 0;font-size:13px;color:var(--mist);line-height:1.7}
+.highlight strong{color:var(--white)}
+.warn{background:rgba(246,195,67,0.07);border:1px solid rgba(246,195,67,0.3);border-radius:10px;padding:12px 16px;margin:16px 0;font-size:13px;color:var(--yellow);line-height:1.6}
+code{font-family:monospace;font-size:12px;background:rgba(255,255,255,0.07);padding:2px 7px;border-radius:4px;color:var(--green)}
+.badge{display:inline-block;font-size:11px;padding:3px 10px;border-radius:99px;margin:2px}
+.badge-green{background:rgba(147,245,116,0.1);color:var(--green);border:1px solid var(--border2)}
+.badge-yellow{background:rgba(246,195,67,0.1);color:var(--yellow);border:1px solid rgba(246,195,67,0.3)}
+.faq-item{border-bottom:1px solid var(--border);padding:16px 0}
+.faq-item:last-child{border-bottom:none}
+.faq-q{font-size:14px;font-weight:600;color:var(--white);margin-bottom:6px;display:flex;align-items:flex-start;gap:10px}
+.faq-q::before{content:'?';width:20px;height:20px;border-radius:50%;background:rgba(147,245,116,0.1);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px}
+.faq-a{font-size:13px;color:var(--mist);line-height:1.7;padding-left:30px}
+.footer{padding:32px 0;border-top:1px solid var(--border);text-align:center}
+.footer p{font-size:12px;color:var(--t2)}
+@media(max-width:560px){.grid-2{grid-template-columns:1fr}.hdr h1{font-size:26px}body{padding:0 20px 80px}}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-badge">&#128203; Documentação interna</div>
+  <h1>Manual do <em>Coordenador</em><br>Bling Seletivo</h1>
+  <p>Guia completo para criar, publicar e avaliar processos seletivos internos usando a plataforma Bling Seletivo — sem precisar de suporte técnico.</p>
+  <div class="hdr-meta">
+    <span>Plataforma <strong>Bling Seletivo</strong></span>
+    <span>Versão <strong>1.0</strong></span>
+    <span>Criado por <strong>Rafaela Zuchi Sperotto</strong></span>
+  </div>
+</div>
+
+<div class="toc">
+  <p class="toc-title">Índice</p>
+  <ul class="toc-list">
+    <li><a href="#s1"><span class="n">01</span> O que é o Bling Seletivo</a></li>
+    <li><a href="#s2"><span class="n">02</span> Acesso à plataforma</a></li>
+    <li><a href="#s3"><span class="n">03</span> Criando um processo seletivo</a></li>
+    <li><a href="#s4"><span class="n">04</span> Publicando e compartilhando</a></li>
+    <li><a href="#s5"><span class="n">05</span> Avaliando candidatos</a></li>
+    <li><a href="#s6"><span class="n">06</span> Painel comparativo e ranking</a></li>
+    <li><a href="#s7"><span class="n">07</span> Perguntas frequentes</a></li>
+  </ul>
+</div>
+
+<section id="s1">
+  <h2><span class="ico">&#127919;</span> 01 — O que é o Bling Seletivo</h2>
+  <p>O <strong>Bling Seletivo</strong> é uma plataforma interna para coordenadores criarem processos seletivos com desafios técnicos — sem precisar de programação, aprovação de TI ou custo adicional.</p>
+  <p>A ideia nasceu do processo seletivo L3 criado pela Rafaela Zuchi Sperotto. Em vez de recriar tudo do zero a cada seleção, a plataforma permite que qualquer coordenador monte seu próprio processo em minutos.</p>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">&#9989; O que você consegue fazer</div>
+      <div class="card-desc">Criar desafios com cenários e perguntas personalizadas, definir critérios de avaliação, compartilhar links com candidatos e gerar um ranking comparativo.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">&#10060; O que não está disponível</div>
+      <div class="card-desc">Envio automático de e-mails, integração com sistemas de RH, upload de arquivos pelos candidatos e avaliação colaborativa entre múltiplos coordenadores.</div>
+    </div>
+  </div>
+  <h3>Como funciona na prática</h3>
+  <div class="steps">
+    <div class="step"><div class="step-left"><div class="step-num">1</div><div class="step-line"></div></div><div class="step-body"><div class="step-title">Coordenador cria o processo</div><div class="step-desc">Define nome, cargo, área, prazo, cenários, perguntas e critérios de avaliação pelo construtor da plataforma.</div></div></div>
+    <div class="step"><div class="step-left"><div class="step-num">2</div><div class="step-line"></div></div><div class="step-body"><div class="step-title">Candidatos recebem o link</div><div class="step-desc">O coordenador compartilha o link do desafio por e-mail ou WhatsApp. O candidato acessa, informa nome e e-mail e responde os cenários.</div></div></div>
+    <div class="step"><div class="step-left"><div class="step-num">3</div><div class="step-line"></div></div><div class="step-body"><div class="step-title">Coordenador avalia as respostas</div><div class="step-desc">No painel de avaliação, vê a resposta do candidato lado a lado com os critérios e atribui uma nota de 1 a 5 por pergunta.</div></div></div>
+    <div class="step"><div class="step-left"><div class="step-num">4</div><div class="step-line"></div></div><div class="step-body"><div class="step-title">Ranking gerado automaticamente</div><div class="step-desc">O painel comparativo mostra todos os candidatos ordenados por nota, com detalhamento por cenário e exportação em CSV.</div></div></div>
+  </div>
+</section>
+
+<section id="s2">
+  <h2><span class="ico">&#128272;</span> 02 — Acesso à plataforma</h2>
+  <p>A plataforma fica em <code>https://bling-sup-cs.github.io/bling-seletivo/</code>. O acesso é restrito a coordenadores cadastrados.</p>
+  <h3>Fazendo login</h3>
+  <div class="steps">
+    <div class="step"><div class="step-left"><div class="step-num">1</div><div class="step-line"></div></div><div class="step-body"><div class="step-title">Acesse a plataforma</div><div class="step-desc">Abra o link no navegador. Você verá a tela de login com campos de e-mail e senha.</div></div></div>
+    <div class="step"><div class="step-left"><div class="step-num">2</div><div class="step-line"></div></div><div class="step-body"><div class="step-title">Use suas credenciais</div><div class="step-desc">Digite seu e-mail <code>@bling.com.br</code> e a senha definida no seu cadastro.</div></div></div>
+    <div class="step"><div class="step-left"><div class="step-num">3</div><div class="step-line"></div></div><div class="step-body"><div class="step-title">Você será redirecionado ao painel</div><div class="step-desc">O painel exibe seus processos ativos, candidatos recebidos e opção de criar um novo processo.</div></div></div>
+  </div>
+  <div class="warn">&#9888;&#65039; Esqueceu a senha? Entre em contato com a Rafaela para redefinição.</div>
+  <div class="highlight"><strong>Privacidade garantida:</strong> cada coordenador vê apenas seus próprios processos. Nenhum coordenador tem acesso aos processos, candidatos ou avaliações de outro.</div>
+  <h3>Cadastro de novos coordenadores</h3>
+  <p>Novos coordenadores precisam ser cadastrados manualmente. Entre em contato com a Rafaela informando o e-mail corporativo — o acesso é liberado em minutos.</p>
+</section>
+
+<section id="s3">
+  <h2><span class="ico">&#128295;</span> 03 — Criando um processo seletivo</h2>
+  <p>O processo é criado em 3 etapas pelo construtor. Você pode salvar rascunho a qualquer momento e continuar depois.</p>
+  <h3>Etapa 1 — Informações básicas</h3>
+  <p>No painel, clique em <strong>"+ Novo processo"</strong> e preencha:</p>
+  <div class="card">
+    <div class="card-desc">
+      <strong>Nome do processo</strong> — aparece para o candidato na tela inicial. Ex: Seleção L3 Q4 2025<br><br>
+      <strong>Cargo</strong> — vaga em aberto. Ex: Analista de Suporte L3<br><br>
+      <strong>Área</strong> — departamento. Ex: Suporte Técnico<br><br>
+      <strong>Prazo</strong> — data limite para os candidatos enviarem as respostas.
+    </div>
+  </div>
+  <h3>Etapa 2 — Cenários e perguntas</h3>
+  <p>Adicione os cenários do desafio. Cada cenário tem um <strong>título</strong>, um <strong>contexto</strong> e uma ou mais <strong>perguntas</strong>.</p>
+  <div class="steps">
+    <div class="step"><div class="step-left"><div class="step-num">1</div><div class="step-line"></div></div><div class="step-body"><div class="step-title">Preencha o título do cenário</div><div class="step-desc">Ex: Triagem de Ouvidoria — aparece na sidebar do candidato.</div></div></div>
+    <div class="step"><div class="step-left"><div class="step-num">2</div><div class="step-line"></div></div><div class="step-body"><div class="step-title">Descreva o contexto</div><div class="step-desc">Explique a situação com detalhes suficientes para o candidato entender o cenário sem conhecimento prévio da empresa.</div></div></div>
+    <div class="step"><div class="step-left"><div class="step-num">3</div><div class="step-line"></div></div><div class="step-body"><div class="step-title">Adicione as perguntas</div><div class="step-desc">Clique em <strong>"+ Adicionar pergunta"</strong>. Use perguntas abertas que revelem o raciocínio do candidato.</div></div></div>
+    <div class="step"><div class="step-left"><div class="step-num">4</div><div class="step-line"></div></div><div class="step-body"><div class="step-title">Adicione mais cenários</div><div class="step-desc">Clique em <strong>"+ Adicionar cenário"</strong> no final da página. Não há limite de cenários.</div></div></div>
+  </div>
+  <div class="warn">&#9888;&#65039; Sempre clique em <strong>"Salvar rascunho"</strong> antes de fechar o navegador.</div>
+  <h3>Etapa 3 — Critérios de avaliação</h3>
+  <p>Para cada pergunta, defina o que caracteriza cada nota de <strong>1 a 5</strong>. Esses critérios aparecem ao lado das respostas na hora de avaliar.</p>
+  <div class="card">
+    <div class="card-title">&#10024; Sugerir critérios</div>
+    <div class="card-desc">Use o botão <strong>"Sugerir critérios"</strong> para preencher automaticamente os 5 campos com textos genéricos prontos. Edite conforme o contexto de cada pergunta.</div>
+  </div>
+  <div class="grid-2">
+    <div class="card"><div class="card-title" style="color:#E55B5B">Nota 1</div><div class="card-desc">Resposta muito superficial, sem demonstrar compreensão do problema.</div></div>
+    <div class="card"><div class="card-title" style="color:#F6C343">Nota 2</div><div class="card-desc">Identifica o problema mas a abordagem é incompleta ou confusa.</div></div>
+    <div class="card"><div class="card-title" style="color:var(--mist)">Nota 3</div><div class="card-desc">Resposta adequada com raciocínio claro, atende ao esperado para a vaga.</div></div>
+    <div class="card"><div class="card-title" style="color:#64C896">Nota 4</div><div class="card-desc">Resposta completa, bem estruturada, com exemplos práticos.</div></div>
+  </div>
+  <div class="card"><div class="card-title" style="color:var(--green)">Nota 5</div><div class="card-desc">Resposta excepcional — demonstra domínio total, visão estratégica e proatividade.</div></div>
+  <p style="margin-top:16px">Ao finalizar, clique em <strong>"Salvar processo"</strong>. O processo é salvo como <span class="badge badge-yellow">Rascunho</span> e aparece no painel pronto para ser publicado.</p>
+</section>
+
+<section id="s4">
+  <h2><span class="ico">&#128640;</span> 04 — Publicando e compartilhando</h2>
+  <p>Um processo em rascunho não é acessível para candidatos. Só após a publicação os links ficam ativos.</p>
+  <h3>Publicando o processo</h3>
+  <p>No painel, localize o processo e clique em <strong>"Publicar"</strong>. Uma janela exibirá dois links:</p>
+  <div class="grid-2">
+    <div class="card"><div class="card-title">&#128279; Link do candidato</div><div class="card-desc">Compartilhe com os candidatos por e-mail ou WhatsApp. Ao abrir, o candidato vê a tela inicial do desafio.</div></div>
+    <div class="card"><div class="card-title">&#128202; Link de avaliação</div><div class="card-desc">Use para acessar a tela de avaliação. Requer login — não compartilhe com candidatos.</div></div>
+  </div>
+  <div class="highlight"><strong>Dica:</strong> copie os dois links e guarde em local seguro. Você pode acessá-los novamente clicando em <strong>"Links"</strong> no painel.</div>
+  <h3>O que o candidato vê</h3>
+  <div class="steps">
+    <div class="step"><div class="step-left"><div class="step-num">1</div><div class="step-line"></div></div><div class="step-body"><div class="step-title">Tela de boas-vindas</div><div class="step-desc">Exibe nome do processo, cargo, área, prazo e número de cenários.</div></div></div>
+    <div class="step"><div class="step-left"><div class="step-num">2</div><div class="step-line"></div></div><div class="step-body"><div class="step-title">Identificação</div><div class="step-desc">O candidato informa nome completo e e-mail corporativo. Cada e-mail só pode enviar uma vez.</div></div></div>
+    <div class="step"><div class="step-left"><div class="step-num">3</div><div class="step-line"></div></div><div class="step-body"><div class="step-title">Responde os cenários</div><div class="step-desc">Navega pelos cenários pela sidebar, responde as perguntas e envia ao final. Pode exportar as respostas em PDF após o envio.</div></div></div>
+  </div>
+  <div class="warn">&#9888;&#65039; Após o envio, o candidato <strong>não pode editar ou reenviar</strong> as respostas.</div>
+</section>
+
+<section id="s5">
+  <h2><span class="ico">&#128221;</span> 05 — Avaliando candidatos</h2>
+  <p>Acesse o link de avaliação ou clique em <strong>"Avaliar"</strong> no painel para abrir a tela de avaliação do processo.</p>
+  <h3>Como avaliar</h3>
+  <div class="steps">
+    <div class="step"><div class="step-left"><div class="step-num">1</div><div class="step-line"></div></div><div class="step-body"><div class="step-title">Selecione um candidato</div><div class="step-desc">Clique no nome na sidebar. As respostas carregam automaticamente.</div></div></div>
+    <div class="step"><div class="step-left"><div class="step-num">2</div><div class="step-line"></div></div><div class="step-body"><div class="step-title">Leia resposta e critério lado a lado</div><div class="step-desc">A resposta do candidato fica à esquerda. Os critérios de 1 a 5 ficam à direita para comparação direta.</div></div></div>
+    <div class="step"><div class="step-left"><div class="step-num">3</div><div class="step-line"></div></div><div class="step-body"><div class="step-title">Clique na nota</div><div class="step-desc">Clique diretamente no critério que melhor representa a resposta. A média geral atualiza em tempo real.</div></div></div>
+    <div class="step"><div class="step-left"><div class="step-num">4</div><div class="step-line"></div></div><div class="step-body"><div class="step-title">Salve a avaliação</div><div class="step-desc">Clique em <strong>"Salvar avaliação"</strong>. O status muda para "Avaliado" na sidebar.</div></div></div>
+  </div>
+  <div class="highlight"><strong>Dica:</strong> avalie todos os candidatos antes de abrir o ranking para uma comparação mais justa.</div>
+</section>
+
+<section id="s6">
+  <h2><span class="ico">&#127942;</span> 06 — Painel comparativo e ranking</h2>
+  <p>Acesse clicando em <strong>"Ver ranking"</strong> na tela de avaliação ou pelo botão no painel.</p>
+  <div class="grid-2">
+    <div class="card"><div class="card-title">Cards de candidatos</div><div class="card-desc">Cada candidato tem um card com posição, nota em 100 pontos e classificação. Os três primeiros recebem medalhas.</div></div>
+    <div class="card"><div class="card-title">Tabela detalhada</div><div class="card-desc">Mostra nota por questão, subtotal por cenário e total geral — identifica em qual cenário cada candidato foi melhor ou pior.</div></div>
+  </div>
+  <h3>Classificações</h3>
+  <div class="card">
+    <div class="card-desc">
+      <span class="badge badge-green">Acima do esperado</span> nota maior ou igual a 70/100<br>
+      <span class="badge badge-yellow">Na média</span> nota entre 50 e 69/100<br>
+      <span class="badge" style="background:rgba(229,91,91,0.1);color:#E55B5B;border:1px solid rgba(229,91,91,0.3)">Abaixo do esperado</span> nota menor que 50/100
+    </div>
+  </div>
+  <h3>Exportando para CSV</h3>
+  <p>Clique em <strong>"CSV"</strong> no canto superior direito. O arquivo abre no Excel com todas as notas por questão, subtotais por cenário e total de cada candidato.</p>
+</section>
+
+<section id="s7">
+  <h2><span class="ico">&#10067;</span> 07 — Perguntas frequentes</h2>
+  <div class="faq-item"><div class="faq-q">Posso editar um processo depois de publicado?</div><div class="faq-a">Sim — clique em "Editar" no painel. Mas atenção: se candidatos já responderam, o ideal é editar apenas antes de compartilhar o link.</div></div>
+  <div class="faq-item"><div class="faq-q">Um candidato pode responder mais de uma vez?</div><div class="faq-a">Não. O sistema verifica o e-mail antes de deixar o candidato iniciar — se aquele e-mail já enviou respostas, o acesso é bloqueado.</div></div>
+  <div class="faq-item"><div class="faq-q">O candidato perde as respostas se fechar o navegador?</div><div class="faq-a">Não — o progresso é salvo automaticamente no navegador a cada resposta digitada. Se fechar e reabrir o mesmo link, as respostas aparecem de onde parou.</div></div>
+  <div class="faq-item"><div class="faq-q">Outro coordenador consegue ver meus processos?</div><div class="faq-a">Não. A plataforma garante que cada coordenador acessa apenas os seus próprios processos, candidatos e avaliações.</div></div>
+  <div class="faq-item"><div class="faq-q">Tem limite de candidatos por processo?</div><div class="faq-a">Na prática não — o banco de dados suporta centenas de candidatos por processo sem custo adicional.</div></div>
+  <div class="faq-item"><div class="faq-q">Como encerro um processo?</div><div class="faq-a">Por enquanto, remova o link de circulação para impedir novos envios. Uma funcionalidade de encerramento automático está planejada para versões futuras.</div></div>
+  <div class="faq-item"><div class="faq-q">Preciso de suporte técnico para usar?</div><div class="faq-a">Não — a plataforma foi pensada para uso autônomo. Em caso de dúvidas, entre em contato com a Rafaela Zuchi Sperotto.</div></div>
+</section>
+
+<div class="footer">
+  <p>Bling Seletivo - Manual do Coordenador - v1.0</p>
+  <p style="margin-top:6px">Criado por Rafaela Zuchi Sperotto — Suporte Técnico L3</p>
+</div>
+
+</body>
+</html>
