@@ -431,11 +431,6 @@
         <div id="perg-opcoes-${bi}-${pi}">
           ${renderOpcoesPergunta(bi, pi, p)}
         </div>
-        <div class="gabarito-wrap">
-          <div class="gabarito-label">📋 Gabarito / resposta esperada</div>
-          <textarea class="gabarito-input" id="gab-${bi}-${pi}" placeholder="Descreva a resposta ideal para esta pergunta…"
-            oninput="dados.blocos[${bi}].perguntas[${pi}].gabarito=this.value" rows="2">${esc(p.gabarito||'')}</textarea>
-        </div>
       </div>`;
   }
 
@@ -452,18 +447,6 @@
         </div>
         <div id="perg-opcoes-${bi}-${pi}">
           ${renderOpcoesPergunta(bi, pi, p)}
-        </div>
-        <div style="display:flex;align-items:center;gap:12px;margin-top:10px;padding-top:10px;border-top:1px dashed var(--border)">
-          <span style="font-size:12px;color:var(--t2)">Peso da questão:</span>
-          <div style="display:flex;gap:6px">
-            ${[1,2,3].map(w => `<button onclick="setPeso(${bi},${pi},${w})" class="peso-btn ${(p.peso||1)===w?'active':''}" id="pw-${bi}-${pi}-${w}">${w}</button>`).join('')}
-          </div>
-          <span style="font-size:11px;color:var(--t1)">Questões com peso maior valem mais na nota final</span>
-        </div>
-        <div class="gabarito-wrap">
-          <div class="gabarito-label">📋 Gabarito / resposta esperada</div>
-          <textarea class="gabarito-input" id="gab-${bi}-${pi}" placeholder="Descreva a resposta ideal…"
-            oninput="dados.blocos[${bi}].perguntas[${pi}].gabarito=this.value" rows="2">${esc(p.gabarito||'')}</textarea>
         </div>
       </div>`;
   }
