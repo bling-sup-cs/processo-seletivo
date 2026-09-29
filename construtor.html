@@ -9,19 +9,17 @@
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
   :root{
     --dark:#002726;--green:#93F574;--t1:#40615E;--t2:#678A88;
-    --mist:#B9C9C9;--white:#FFFFFF;--card:#03302F;--card2:#042F2E;
+    --mist:#B9C9C9;--white:#FFFFFF;--card:#03302F;
     --border:rgba(147,245,116,0.15);--border2:rgba(147,245,116,0.3);
     --yellow:#F6C343;--red:#E55B5B;
   }
   html,body{height:100%;font-family:'Inter',sans-serif;background:var(--dark);color:var(--white);-webkit-font-smoothing:antialiased}
 
-  /* ── HEADER ── */
   .hdr{height:68px;padding:0 48px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--dark);z-index:10}
   .logo-area{display:flex;align-items:center;gap:12px}
   .logo-mark{width:32px;height:32px;background:var(--green);border-radius:8px;display:flex;align-items:center;justify-content:center}
   .logo-mark svg{width:18px;height:18px}
-  .logo-name{font-size:15px;font-weight:600}
-  .logo-name span{color:var(--green)}
+  .logo-name{font-size:15px;font-weight:600}.logo-name span{color:var(--green)}
   .hdr-right{display:flex;align-items:center;gap:12px}
   .btn-s{background:transparent;color:var(--mist);border:1px solid var(--border);border-radius:10px;padding:8px 16px;font-size:13px;font-family:'Inter',sans-serif;cursor:pointer;transition:all .15s}
   .btn-s:hover{border-color:var(--t2);color:var(--white)}
@@ -29,7 +27,7 @@
   .btn-p:hover{opacity:.88}
   .btn-p:disabled{opacity:.4;cursor:not-allowed}
 
-  /* ── STEPS ── */
+  /* STEPS */
   .steps-bar{padding:20px 48px;border-bottom:1px solid var(--border);display:flex;gap:0;align-items:center}
   .step-item{display:flex;align-items:center;gap:10px;cursor:pointer;padding:6px 12px;border-radius:10px;transition:background .15s}
   .step-item:hover{background:rgba(147,245,116,0.04)}
@@ -42,21 +40,14 @@
   .step-label.pending{color:var(--t2)}
   .step-divider{width:40px;height:1px;background:var(--border);flex-shrink:0;margin:0 4px}
 
-  /* ── CONTENT ── */
   .content{max-width:760px;margin:0 auto;padding:44px 40px 100px}
-
-  /* ── SECTION TITLE ── */
   .sec-title{font-size:22px;font-weight:600;margin-bottom:6px}
   .sec-sub{font-size:14px;color:var(--t2);margin-bottom:32px;line-height:1.6}
 
-  /* ── FORM ── */
+  /* FORM */
   .fg{margin-bottom:18px}
   .fg label{font-size:13px;color:var(--mist);margin-bottom:7px;display:block;font-weight:500}
-  .fg input,.fg select,.fg textarea{
-    width:100%;background:rgba(0,0,0,0.2);border:1px solid var(--border);
-    border-radius:10px;padding:12px 14px;color:var(--white);font-size:14px;
-    font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;
-  }
+  .fg input,.fg select,.fg textarea{width:100%;background:rgba(0,0,0,0.2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--white);font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s}
   .fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--green)}
   .fg input::placeholder,.fg textarea::placeholder{color:var(--t1)}
   .fg select option{background:var(--card)}
@@ -64,39 +55,86 @@
   .fg-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
   .fg-hint{font-size:12px;color:var(--t2);margin-top:5px}
 
-  /* ── CENÁRIO CARD ── */
-  .cenario-card{background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:14px;overflow:hidden}
-  .cenario-header{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:background .15s}
-  .cenario-header:hover{background:rgba(147,245,116,0.03)}
-  .cenario-header-left{display:flex;align-items:center;gap:12px}
-  .cenario-tag{font-size:11px;color:var(--green);font-weight:600;text-transform:uppercase;letter-spacing:.05em;background:rgba(147,245,116,0.1);border:1px solid var(--border2);padding:3px 10px;border-radius:99px}
-  .cenario-titulo-preview{font-size:14px;font-weight:500;color:var(--mist)}
-  .cenario-header-right{display:flex;align-items:center;gap:8px}
+  /* BLOCO (cenário ou questão) */
+  .bloco-card{background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:14px;overflow:hidden}
+  .bloco-header{padding:14px 20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:background .15s}
+  .bloco-header:hover{background:rgba(147,245,116,0.03)}
+  .bloco-header-left{display:flex;align-items:center;gap:10px}
+  .bloco-tipo-badge{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:3px 10px;border-radius:99px}
+  .badge-cenario{background:rgba(147,245,116,0.1);color:var(--green);border:1px solid var(--border2)}
+  .badge-questao{background:rgba(103,138,136,0.2);color:var(--mist);border:1px solid rgba(103,138,136,0.3)}
+  .bloco-titulo-preview{font-size:14px;font-weight:500;color:var(--mist)}
+  .bloco-header-right{display:flex;align-items:center;gap:8px}
   .btn-ico{background:transparent;border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-size:12px;color:var(--t2);cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
   .btn-ico:hover{border-color:var(--border2);color:var(--white)}
   .btn-ico.danger:hover{border-color:rgba(229,91,91,0.4);color:var(--red)}
   .chevron{font-size:12px;color:var(--t2);transition:transform .2s}
   .chevron.open{transform:rotate(180deg)}
-  .cenario-body{padding:0 20px 20px;border-top:1px solid var(--border);display:none}
-  .cenario-body.open{display:block}
+  .bloco-body{padding:0 20px 20px;border-top:1px solid var(--border);display:none}
+  .bloco-body.open{display:block}
 
-  /* ── PERGUNTA ── */
-  .pergunta-item{background:rgba(0,0,0,0.15);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-top:12px;display:flex;gap:12px;align-items:flex-start}
-  .perg-num{width:24px;height:24px;border-radius:50%;background:rgba(147,245,116,0.1);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--green);flex-shrink:0;margin-top:1px}
-  .perg-input{flex:1;background:transparent;border:none;color:var(--white);font-size:13px;font-family:'Inter',sans-serif;outline:none;resize:none;min-height:40px;line-height:1.65}
+  /* TIPO SELECTOR */
+  .tipo-selector{display:flex;gap:8px;margin-bottom:16px;margin-top:16px;flex-wrap:wrap}
+  .tipo-btn{background:transparent;border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:12px;color:var(--mist);cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
+  .tipo-btn:hover{border-color:var(--border2);color:var(--white)}
+  .tipo-btn.active{background:rgba(147,245,116,0.1);border-color:var(--border2);color:var(--green)}
+
+  /* PERGUNTA */
+  .perg-item{background:rgba(0,0,0,0.15);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-top:10px}
+  .perg-top{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px}
+  .perg-num{width:24px;height:24px;border-radius:50%;background:rgba(147,245,116,0.1);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--green);flex-shrink:0;margin-top:2px}
+  .perg-input{flex:1;background:transparent;border:none;color:var(--white);font-size:13px;font-family:'Inter',sans-serif;outline:none;resize:none;min-height:36px;line-height:1.65}
   .perg-input::placeholder{color:var(--t1)}
-  .btn-remove{background:transparent;border:none;color:var(--t2);cursor:pointer;font-size:14px;padding:2px;transition:color .15s;flex-shrink:0}
+  .btn-remove{background:transparent;border:none;color:var(--t2);cursor:pointer;font-size:16px;padding:0;flex-shrink:0;transition:color .15s;line-height:1}
   .btn-remove:hover{color:var(--red)}
+
+  /* TIPO PERGUNTA */
+  .perg-tipo-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+  .perg-tipo-label{font-size:11px;color:var(--t2);text-transform:uppercase;letter-spacing:.05em}
+  .perg-tipo-btn{background:transparent;border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--t2);cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
+  .perg-tipo-btn:hover{border-color:var(--border2);color:var(--white)}
+  .perg-tipo-btn.active{background:rgba(147,245,116,0.08);border-color:var(--border2);color:var(--green)}
+
+  /* OPCOES MULTIPLA ESCOLHA */
+  .opcoes-wrap{margin-top:8px}
+  .opcao-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+  .opcao-radio{width:16px;height:16px;accent-color:var(--green);cursor:pointer;flex-shrink:0}
+  .opcao-input{flex:1;background:rgba(0,0,0,0.2);border:1px solid var(--border);border-radius:7px;padding:7px 10px;color:var(--white);font-size:12px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s}
+  .opcao-input:focus{border-color:var(--green)}
+  .opcao-input::placeholder{color:var(--t1)}
+  .btn-remove-sm{background:transparent;border:none;color:var(--t2);cursor:pointer;font-size:14px;padding:0;transition:color .15s}
+  .btn-remove-sm:hover{color:var(--red)}
+  .add-opcao-btn{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--green);background:transparent;border:1px dashed var(--border2);border-radius:7px;padding:6px 12px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;margin-top:4px}
+  .add-opcao-btn:hover{background:rgba(147,245,116,0.04)}
+
+  /* SIM/NAO */
+  .sim-nao-wrap{display:flex;gap:10px;margin-top:8px}
+  .sim-nao-opt{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,0.15);border:1px solid var(--border);border-radius:8px;padding:8px 14px;cursor:pointer;transition:all .15s;flex:1;justify-content:center}
+  .sim-nao-opt:hover{border-color:var(--border2)}
+  .sim-nao-opt.correta{background:rgba(147,245,116,0.1);border-color:var(--border2)}
+  .sim-nao-opt input{accent-color:var(--green)}
+  .sim-nao-opt span{font-size:13px;font-weight:500}
+
+  /* GABARITO */
+  .gabarito-wrap{margin-top:10px;padding-top:10px;border-top:1px dashed var(--border)}
+  .gabarito-label{font-size:11px;color:var(--yellow);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+  .gabarito-input{width:100%;background:rgba(246,195,67,0.05);border:1px solid rgba(246,195,67,0.2);border-radius:8px;padding:9px 12px;color:var(--white);font-size:12px;font-family:'Inter',sans-serif;outline:none;resize:none;min-height:56px;line-height:1.6;transition:border-color .2s}
+  .gabarito-input:focus{border-color:rgba(246,195,67,0.5)}
+  .gabarito-input::placeholder{color:var(--t1)}
 
   .add-perg-btn{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--green);background:transparent;border:1px dashed var(--border2);border-radius:10px;padding:10px 14px;cursor:pointer;width:100%;margin-top:10px;font-family:'Inter',sans-serif;transition:all .15s}
   .add-perg-btn:hover{background:rgba(147,245,116,0.04)}
 
-  .add-cenario-btn{display:flex;align-items:center;justify-content:center;gap:10px;font-size:14px;color:var(--green);background:transparent;border:1px dashed var(--border2);border-radius:14px;padding:16px;cursor:pointer;width:100%;font-family:'Inter',sans-serif;transition:all .15s;margin-top:4px}
-  .add-cenario-btn:hover{background:rgba(147,245,116,0.04)}
+  /* ADD BLOCO */
+  .add-bloco-row{display:flex;gap:10px;margin-top:4px}
+  .add-bloco-btn{display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px;color:var(--green);background:transparent;border:1px dashed var(--border2);border-radius:14px;padding:14px;cursor:pointer;flex:1;font-family:'Inter',sans-serif;transition:all .15s}
+  .add-bloco-btn:hover{background:rgba(147,245,116,0.04)}
+  .add-bloco-btn.questao{color:var(--mist);border-color:rgba(103,138,136,0.3)}
+  .add-bloco-btn.questao:hover{border-color:var(--t2)}
 
-  /* ── CRITÉRIOS ── */
+  /* CRITERIOS */
   .criterio-block{background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:14px;overflow:hidden}
-  .criterio-header{padding:16px 20px;border-bottom:1px solid var(--border)}
+  .criterio-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
   .criterio-perg-num{font-size:11px;color:var(--green);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
   .criterio-perg-txt{font-size:14px;color:var(--white);font-weight:500;line-height:1.5}
   .criterio-notas{padding:16px 20px;display:flex;flex-direction:column;gap:10px}
@@ -113,33 +151,28 @@
   .btn-sugerir{background:rgba(147,245,116,0.07);border:1px solid var(--border2);border-radius:8px;padding:7px 14px;font-size:12px;color:var(--green);font-family:'Inter',sans-serif;cursor:pointer;transition:all .15s;white-space:nowrap;flex-shrink:0}
   .btn-sugerir:hover{background:rgba(147,245,116,0.14)}
 
-  /* ── FOOTER FIXO ── */
+  /* AUTO-CORRIGIDA */
+  .auto-corr{background:rgba(147,245,116,0.05);border:1px solid var(--border2);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--green)}
+
   .footer-bar{position:fixed;bottom:0;left:0;right:0;background:var(--dark);border-top:1px solid var(--border);padding:14px 48px;display:flex;justify-content:space-between;align-items:center;z-index:10}
   .footer-info{font-size:12px;color:var(--t2)}
   .footer-info strong{color:var(--green)}
   .footer-btns{display:flex;gap:10px}
-
-  /* ── TOAST ── */
   .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--border2);border-radius:12px;padding:12px 20px;font-size:13px;color:var(--green);display:none;z-index:999;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
 
   @media(max-width:640px){
     .hdr,.steps-bar,.footer-bar{padding-left:20px;padding-right:20px}
     .content{padding:28px 20px 100px}
     .fg-row{grid-template-columns:1fr}
-    .steps-bar{overflow-x:auto;gap:0}
     .step-label{display:none}
-    .step-divider{width:20px}
   }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header class="hdr">
   <div class="logo-area">
-    <div class="logo-mark">
-      <svg viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="6" height="6" rx="1.5" fill="#002726"/><rect x="10" y="2" width="6" height="6" rx="1.5" fill="#002726"/><rect x="2" y="10" width="6" height="6" rx="1.5" fill="#002726"/><rect x="10" y="10" width="6" height="6" rx="1.5" fill="#002726" opacity=".4"/></svg>
-    </div>
+    <div class="logo-mark"><svg viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="6" height="6" rx="1.5" fill="#002726"/><rect x="10" y="2" width="6" height="6" rx="1.5" fill="#002726"/><rect x="2" y="10" width="6" height="6" rx="1.5" fill="#002726"/><rect x="10" y="10" width="6" height="6" rx="1.5" fill="#002726" opacity=".4"/></svg></div>
     <span class="logo-name">Bling <span>Seletivo</span></span>
   </div>
   <div class="hdr-right">
@@ -147,28 +180,16 @@
   </div>
 </header>
 
-<!-- STEPS BAR -->
 <div class="steps-bar">
-  <div class="step-item" onclick="irPara(1)">
-    <div class="step-num active" id="sn-1">1</div>
-    <span class="step-label active" id="sl-1">Informações</span>
-  </div>
+  <div class="step-item" onclick="irPara(1)"><div class="step-num active" id="sn-1">1</div><span class="step-label active" id="sl-1">Informações</span></div>
   <div class="step-divider"></div>
-  <div class="step-item" onclick="irPara(2)">
-    <div class="step-num pending" id="sn-2">2</div>
-    <span class="step-label pending" id="sl-2">Cenários e perguntas</span>
-  </div>
+  <div class="step-item" onclick="irPara(2)"><div class="step-num pending" id="sn-2">2</div><span class="step-label pending" id="sl-2">Cenários e questões</span></div>
   <div class="step-divider"></div>
-  <div class="step-item" onclick="irPara(3)">
-    <div class="step-num pending" id="sn-3">3</div>
-    <span class="step-label pending" id="sl-3">Critérios de avaliação</span>
-  </div>
+  <div class="step-item" onclick="irPara(3)"><div class="step-num pending" id="sn-3">3</div><span class="step-label pending" id="sl-3">Critérios e gabarito</span></div>
 </div>
 
-<!-- CONTENT -->
 <div class="content" id="content"></div>
 
-<!-- FOOTER -->
 <div class="footer-bar">
   <div class="footer-info" id="footer-info"></div>
   <div class="footer-btns">
@@ -178,13 +199,12 @@
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, setDoc, addDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCxWXwMe3rE1zMSiIxmz5E34cc2BmyeGsw",
@@ -203,13 +223,10 @@
   let processId = new URLSearchParams(window.location.search).get('p');
   let etapa = 1;
 
-  // Estado do processo
-  let dados = {
-    title: '', role: '', area: '', deadline: '',
-    scenarios: []
-  };
+  // Estrutura de dados
+  // bloco: { tipo: 'cenario'|'questao', title, context, perguntas: [{ texto, tipo: 'dissertativa'|'multipla'|'simnao', opcoes: [{texto, correta}], gabarito, criteria: [{score,description}] }] }
+  let dados = { title:'', role:'', area:'', deadline:'', blocos:[] };
 
-  // ── GUARD ──
   onAuthStateChanged(auth, async user => {
     if (!user) { window.location.href = 'index.html'; return; }
     currentUser = user;
@@ -225,366 +242,452 @@
         dados.title    = d.title || '';
         dados.role     = d.role || '';
         dados.area     = d.area || '';
-        dados.deadline = d.deadline ? new Date(d.deadline.seconds * 1000).toISOString().split('T')[0] : '';
-        dados.scenarios = d.scenarios || [];
+        dados.deadline = d.deadline ? new Date(d.deadline.seconds*1000).toISOString().split('T')[0] : '';
+        // Suporte ao formato antigo (scenarios) e novo (blocos)
+        if (d.blocos) {
+          dados.blocos = d.blocos;
+        } else if (d.scenarios) {
+          dados.blocos = d.scenarios.map(sc => ({
+            tipo: 'cenario', title: sc.title, context: sc.context,
+            perguntas: (sc.questions||[]).map(q => ({
+              texto: q.text||'', tipo: 'dissertativa', opcoes:[], gabarito:'',
+              criteria: q.criteria||[]
+            }))
+          }));
+        }
       }
     } catch(e) { console.error(e); }
   }
 
-  // ── RENDER ETAPAS ──
-  window.renderEtapa = function(n) {
-    etapa = n;
-    atualizarSteps();
+  // ── ETAPA 1 ──
+  function renderEtapa1() {
     const c = document.getElementById('content');
+    c.innerHTML = `
+      <h2 class="sec-title">Informações do processo</h2>
+      <p class="sec-sub">Defina o nome, cargo, área e prazo do processo seletivo.</p>
+      <div class="fg"><label>Nome do processo</label><input type="text" id="f-titulo" placeholder="Ex: Seleção L3 Q4 2025" value="${esc(dados.title)}"></div>
+      <div class="fg-row">
+        <div class="fg"><label>Cargo</label><input type="text" id="f-cargo" placeholder="Ex: Analista de Suporte L3" value="${esc(dados.role)}"></div>
+        <div class="fg"><label>Área</label><input type="text" id="f-area" placeholder="Ex: Suporte Técnico" value="${esc(dados.area)}"></div>
+      </div>
+      <div class="fg" style="max-width:260px">
+        <label>Prazo para entrega</label>
+        <input type="date" id="f-prazo" value="${esc(dados.deadline)}">
+      </div>`;
+    document.getElementById('btn-anterior').style.display='none';
+    document.getElementById('btn-proximo').textContent='Próximo →';
+    document.getElementById('footer-info').innerHTML='Etapa <strong>1 de 3</strong> — Informações básicas';
+  }
 
-    if (n === 1) {
-      c.innerHTML = `
-        <h2 class="sec-title">Informações do processo</h2>
-        <p class="sec-sub">Defina o nome, cargo, área e prazo. Essas informações aparecem para os candidatos na tela inicial do desafio.</p>
-        <div class="fg">
-          <label>Nome do processo</label>
-          <input type="text" id="f-titulo" placeholder="Ex: Seleção Suporte L3 — Q4 2025" value="${esc(dados.title)}">
-        </div>
-        <div class="fg-row">
-          <div class="fg">
-            <label>Cargo</label>
-            <input type="text" id="f-cargo" placeholder="Ex: Analista de Suporte L3" value="${esc(dados.role)}">
+  // ── ETAPA 2 ──
+  function renderEtapa2() {
+    if (dados.blocos.length === 0) dados.blocos.push(novoCenario());
+    const c = document.getElementById('content');
+    c.innerHTML = `
+      <h2 class="sec-title">Cenários e questões</h2>
+      <p class="sec-sub">Adicione <strong>cenários</strong> (com contexto e perguntas) ou <strong>questões avulsas</strong> (uma pergunta direta). Cada pergunta pode ser dissertativa, múltipla escolha ou sim/não.</p>
+      <div id="blocos-lista"></div>
+      <div class="add-bloco-row">
+        <button class="add-bloco-btn" onclick="adicionarBloco('cenario')">+ Cenário</button>
+        <button class="add-bloco-btn questao" onclick="adicionarBloco('questao')">+ Questão avulsa</button>
+      </div>`;
+    renderBlocos();
+    document.getElementById('btn-anterior').style.display='inline-flex';
+    document.getElementById('btn-proximo').textContent='Próximo →';
+    document.getElementById('footer-info').innerHTML=`Etapa <strong>2 de 3</strong> — <strong>${dados.blocos.length}</strong> bloco(s)`;
+  }
+
+  function renderBlocos() {
+    const lista = document.getElementById('blocos-lista');
+    if (!lista) return;
+    lista.innerHTML = dados.blocos.map((bl, bi) => {
+      const isCenario = bl.tipo === 'cenario';
+      return `
+        <div class="bloco-card" id="bl-${bi}">
+          <div class="bloco-header" onclick="toggleBloco(${bi})">
+            <div class="bloco-header-left">
+              <span class="bloco-tipo-badge ${isCenario?'badge-cenario':'badge-questao'}">${isCenario?'Cenário':'Questão'}</span>
+              <span class="bloco-titulo-preview" id="bprev-${bi}">${esc(bl.title)||'Sem título'}</span>
+            </div>
+            <div class="bloco-header-right">
+              <button class="btn-ico danger" onclick="event.stopPropagation();removerBloco(${bi})">🗑</button>
+              <span class="chevron open" id="bchev-${bi}">▾</span>
+            </div>
           </div>
-          <div class="fg">
-            <label>Área</label>
-            <input type="text" id="f-area" placeholder="Ex: Suporte Técnico" value="${esc(dados.area)}">
+          <div class="bloco-body open" id="bb-${bi}">
+            <div style="padding-top:16px">
+              <div class="fg">
+                <label>${isCenario?'Título do cenário':'Título da questão'}</label>
+                <input type="text" id="bl-title-${bi}" placeholder="${isCenario?'Ex: Conhecimentos Técnicos':'Ex: Você tem familiaridade com N8N?'}"
+                  value="${esc(bl.title)}"
+                  oninput="dados.blocos[${bi}].title=this.value;document.getElementById('bprev-${bi}').textContent=this.value||'Sem título'">
+              </div>
+              ${isCenario?`
+              <div class="fg">
+                <label>Contexto / situação</label>
+                <textarea id="bl-ctx-${bi}" placeholder="Descreva a situação…" rows="3"
+                  oninput="dados.blocos[${bi}].context=this.value">${esc(bl.context)}</textarea>
+              </div>`:''}
+              <div style="margin-top:12px">
+                <div style="font-size:12px;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">${isCenario?'Perguntas':'Resposta'}</div>
+                <div id="pergs-${bi}">
+                  ${bl.perguntas.map((p,pi) => renderPergunta(bi,pi,p)).join('')}
+                </div>
+                ${isCenario?`<button class="add-perg-btn" onclick="adicionarPergunta(${bi})">+ Adicionar pergunta</button>`:''}
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="fg" style="max-width:260px">
-          <label>Prazo para entrega</label>
-          <input type="date" id="f-prazo" value="${esc(dados.deadline)}">
-          <p class="fg-hint">Os candidatos verão este prazo na tela inicial.</p>
         </div>`;
-      document.getElementById('btn-anterior').style.display = 'none';
-      document.getElementById('btn-proximo').textContent = 'Próximo →';
-      document.getElementById('footer-info').innerHTML = 'Etapa <strong>1 de 3</strong> — Informações básicas';
-    }
+    }).join('');
+  }
 
-    else if (n === 2) {
-      renderEtapa2();
-      document.getElementById('btn-anterior').style.display = 'inline-flex';
-      document.getElementById('btn-proximo').textContent = 'Próximo →';
-      document.getElementById('footer-info').innerHTML = `Etapa <strong>2 de 3</strong> — <strong>${dados.scenarios.length}</strong> cenário(s)`;
-    }
+  function renderPergunta(bi, pi, p) {
+    const tipo = p.tipo || 'dissertativa';
+    return `
+      <div class="perg-item" id="pq-${bi}-${pi}">
+        <div class="perg-top">
+          <div class="perg-num">${pi+1}</div>
+          <textarea class="perg-input" rows="2" placeholder="Escreva a pergunta…"
+            oninput="dados.blocos[${bi}].perguntas[${pi}].texto=this.value">${esc(p.texto)}</textarea>
+          ${dados.blocos[bi].perguntas.length > 1 ? `<button class="btn-remove" onclick="removerPergunta(${bi},${pi})">×</button>` : ''}
+        </div>
+        <div class="perg-tipo-row">
+          <span class="perg-tipo-label">Tipo:</span>
+          <button class="perg-tipo-btn ${tipo==='dissertativa'?'active':''}" onclick="setTipoPergunta(${bi},${pi},'dissertativa')">✍ Dissertativa</button>
+          <button class="perg-tipo-btn ${tipo==='multipla'?'active':''}" onclick="setTipoPergunta(${bi},${pi},'multipla')">☑ Múltipla escolha</button>
+          <button class="perg-tipo-btn ${tipo==='simnao'?'active':''}" onclick="setTipoPergunta(${bi},${pi},'simnao')">◉ Sim / Não</button>
+        </div>
+        <div id="perg-opcoes-${bi}-${pi}">
+          ${renderOpcoesPergunta(bi, pi, p)}
+        </div>
+        <div class="gabarito-wrap">
+          <div class="gabarito-label">📋 Gabarito / resposta esperada</div>
+          <textarea class="gabarito-input" id="gab-${bi}-${pi}" placeholder="Descreva a resposta ideal para esta pergunta…"
+            oninput="dados.blocos[${bi}].perguntas[${pi}].gabarito=this.value" rows="2">${esc(p.gabarito||'')}</textarea>
+        </div>
+      </div>`;
+  }
 
-    else if (n === 3) {
-      renderEtapa3();
-      document.getElementById('btn-anterior').style.display = 'inline-flex';
-      document.getElementById('btn-proximo').textContent = '✦ Salvar processo';
-      document.getElementById('footer-info').innerHTML = 'Etapa <strong>3 de 3</strong> — Critérios de avaliação';
+  function renderOpcoesPergunta(bi, pi, p) {
+    const tipo = p.tipo || 'dissertativa';
+    if (tipo === 'dissertativa') return '<div style="font-size:12px;color:var(--t2);padding:6px 0">Campo de texto aberto para o candidato escrever a resposta.</div>';
+    if (tipo === 'simnao') {
+      const correta = p.opcoes?.[0]?.correta ? 'sim' : p.opcoes?.[1]?.correta ? 'nao' : '';
+      return `
+        <div class="sim-nao-wrap">
+          <div class="sim-nao-opt ${correta==='sim'?'correta':''}" onclick="setSimNao(${bi},${pi},'sim')">
+            <input type="radio" name="sn-${bi}-${pi}" ${correta==='sim'?'checked':''} readonly> <span>Sim</span>
+          </div>
+          <div class="sim-nao-opt ${correta==='nao'?'correta':''}" onclick="setSimNao(${bi},${pi},'nao')">
+            <input type="radio" name="sn-${bi}-${pi}" ${correta==='nao'?'checked':''} readonly> <span>Não</span>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--t2);margin-top:6px">Clique para marcar a resposta correta</div>`;
     }
+    if (tipo === 'multipla') {
+      const opcoes = p.opcoes && p.opcoes.length > 0 ? p.opcoes : [{texto:'',correta:true},{texto:'',correta:false}];
+      return `
+        <div class="opcoes-wrap" id="opc-${bi}-${pi}">
+          ${opcoes.map((o,oi) => `
+            <div class="opcao-row" id="opc-row-${bi}-${pi}-${oi}">
+              <input type="radio" class="opcao-radio" name="opc-${bi}-${pi}" ${o.correta?'checked':''} onclick="setOpcaoCorreta(${bi},${pi},${oi})">
+              <input class="opcao-input" type="text" placeholder="Opção ${oi+1}…" value="${esc(o.texto)}"
+                oninput="dados.blocos[${bi}].perguntas[${pi}].opcoes[${oi}].texto=this.value">
+              ${opcoes.length > 2 ? `<button class="btn-remove-sm" onclick="removerOpcao(${bi},${pi},${oi})">×</button>` : ''}
+            </div>`).join('')}
+          <button class="add-opcao-btn" onclick="adicionarOpcao(${bi},${pi})">+ Adicionar opção</button>
+        </div>
+        <div style="font-size:11px;color:var(--t2);margin-top:4px">Selecione o ● ao lado da opção correta</div>`;
+    }
+    return '';
+  }
+
+  // ── AÇÕES PERGUNTAS ──
+  window.setTipoPergunta = function(bi, pi, tipo) {
+    coletarBlocos();
+    const p = dados.blocos[bi].perguntas[pi];
+    p.tipo = tipo;
+    if (tipo === 'multipla' && (!p.opcoes || p.opcoes.length === 0)) {
+      p.opcoes = [{texto:'',correta:true},{texto:'',correta:false}];
+    }
+    if (tipo === 'simnao') {
+      p.opcoes = [{texto:'Sim',correta:false},{texto:'Não',correta:false}];
+    }
+    if (tipo === 'dissertativa') p.opcoes = [];
+    renderBlocos();
+    reabrirBlocos();
   };
 
-  function renderEtapa2() {
-    const c = document.getElementById('content');
-    if (dados.scenarios.length === 0) dados.scenarios.push(novoCenario(1));
+  window.setSimNao = function(bi, pi, val) {
+    dados.blocos[bi].perguntas[pi].opcoes = [
+      {texto:'Sim', correta: val==='sim'},
+      {texto:'Não', correta: val==='nao'}
+    ];
+    const wrap = document.getElementById(`perg-opcoes-${bi}-${pi}`);
+    if (wrap) wrap.innerHTML = renderOpcoesPergunta(bi, pi, dados.blocos[bi].perguntas[pi]);
+  };
 
-    c.innerHTML = `
-      <h2 class="sec-title">Cenários e perguntas</h2>
-      <p class="sec-sub">Adicione os cenários do processo. Cada cenário tem um contexto e uma ou mais perguntas para o candidato responder.</p>
-      <div id="cenarios-lista"></div>
-      <button class="add-cenario-btn" onclick="adicionarCenario()">+ Adicionar cenário</button>`;
-    renderCenarios();
+  window.setOpcaoCorreta = function(bi, pi, oi) {
+    dados.blocos[bi].perguntas[pi].opcoes.forEach((o,i) => o.correta = i===oi);
+  };
+
+  window.adicionarOpcao = function(bi, pi) {
+    coletarBlocos();
+    dados.blocos[bi].perguntas[pi].opcoes.push({texto:'',correta:false});
+    renderBlocos(); reabrirBlocos();
+  };
+
+  window.removerOpcao = function(bi, pi, oi) {
+    coletarBlocos();
+    dados.blocos[bi].perguntas[pi].opcoes.splice(oi,1);
+    renderBlocos(); reabrirBlocos();
+  };
+
+  window.adicionarPergunta = function(bi) {
+    coletarBlocos();
+    dados.blocos[bi].perguntas.push({texto:'',tipo:'dissertativa',opcoes:[],gabarito:'',criteria:[]});
+    renderBlocos(); reabrirBlocos();
+  };
+
+  window.removerPergunta = function(bi, pi) {
+    if (dados.blocos[bi].perguntas.length === 1) { toast('Precisa ter ao menos uma pergunta.'); return; }
+    coletarBlocos();
+    dados.blocos[bi].perguntas.splice(pi,1);
+    renderBlocos(); reabrirBlocos();
+  };
+
+  window.adicionarBloco = function(tipo) {
+    coletarBlocos();
+    dados.blocos.push(tipo==='cenario' ? novoCenario() : novaQuestao());
+    renderBlocos();
+    document.getElementById('footer-info').innerHTML=`Etapa <strong>2 de 3</strong> — <strong>${dados.blocos.length}</strong> bloco(s)`;
+  };
+
+  window.removerBloco = function(bi) {
+    if (dados.blocos.length === 1) { toast('Precisa ter ao menos um bloco.'); return; }
+    if (!confirm('Remover este bloco?')) return;
+    coletarBlocos();
+    dados.blocos.splice(bi,1);
+    renderBlocos();
+  };
+
+  window.toggleBloco = function(bi) {
+    document.getElementById(`bb-${bi}`)?.classList.toggle('open');
+    document.getElementById(`bchev-${bi}`)?.classList.toggle('open');
+  };
+
+  function reabrirBlocos() {
+    dados.blocos.forEach((_,bi) => {
+      const b = document.getElementById(`bb-${bi}`);
+      if (b) b.classList.add('open');
+    });
   }
 
-  function renderCenarios() {
-    const lista = document.getElementById('cenarios-lista');
-    if (!lista) return;
-    lista.innerHTML = dados.scenarios.map((sc, si) => `
-      <div class="cenario-card" id="sc-${si}">
-        <div class="cenario-header" onclick="toggleCenario(${si})">
-          <div class="cenario-header-left">
-            <span class="cenario-tag">Cenário ${String(si+1).padStart(2,'0')}</span>
-            <span class="cenario-titulo-preview" id="prev-${si}">${sc.title || 'Sem título'}</span>
-          </div>
-          <div class="cenario-header-right">
-            <button class="btn-ico danger" onclick="event.stopPropagation();removerCenario(${si})">🗑</button>
-            <span class="chevron" id="chev-${si}">▾</span>
-          </div>
-        </div>
-        <div class="cenario-body open" id="cb-${si}">
-          <div style="padding-top:16px">
-            <div class="fg">
-              <label>Título do cenário</label>
-              <input type="text" id="sc-title-${si}" placeholder="Ex: Triagem de Ouvidoria"
-                value="${esc(sc.title)}"
-                oninput="dados.scenarios[${si}].title=this.value;document.getElementById('prev-${si}').textContent=this.value||'Sem título'">
-            </div>
-            <div class="fg">
-              <label>Contexto / situação</label>
-              <textarea id="sc-ctx-${si}" placeholder="Descreva a situação que o candidato vai enfrentar…" rows="4"
-                oninput="dados.scenarios[${si}].context=this.value">${esc(sc.context)}</textarea>
-            </div>
-            <div style="margin-top:16px">
-              <div style="font-size:12px;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Perguntas</div>
-              <div id="pergs-${si}">
-                ${sc.questions.map((q, qi) => `
-                  <div class="pergunta-item" id="pq-${si}-${qi}">
-                    <div class="perg-num">${qi+1}</div>
-                    <textarea class="perg-input" rows="2" placeholder="Escreva a pergunta…"
-                      oninput="dados.scenarios[${si}].questions[${qi}].text=this.value">${esc(q.text)}</textarea>
-                    <button class="btn-remove" onclick="removerPergunta(${si},${qi})" title="Remover pergunta">×</button>
-                  </div>`).join('')}
-              </div>
-              <button class="add-perg-btn" onclick="adicionarPergunta(${si})">+ Adicionar pergunta</button>
-            </div>
-          </div>
-        </div>
-      </div>`).join('');
+  function novoCenario() { return {tipo:'cenario',title:'',context:'',perguntas:[{texto:'',tipo:'dissertativa',opcoes:[],gabarito:'',criteria:[]}]}; }
+  function novaQuestao() { return {tipo:'questao',title:'',context:'',perguntas:[{texto:'',tipo:'dissertativa',opcoes:[],gabarito:'',criteria:[]}]}; }
+
+  function coletarBlocos() {
+    dados.blocos.forEach((bl,bi) => {
+      bl.title   = document.getElementById(`bl-title-${bi}`)?.value ?? bl.title;
+      bl.context = document.getElementById(`bl-ctx-${bi}`)?.value   ?? bl.context;
+      bl.perguntas.forEach((p,pi) => {
+        const el = document.getElementById(`pq-${bi}-${pi}`)?.querySelector('textarea');
+        if (el) p.texto = el.value;
+        const gab = document.getElementById(`gab-${bi}-${pi}`);
+        if (gab) p.gabarito = gab.value;
+        // Coletar opções de texto
+        if (p.tipo === 'multipla' && p.opcoes) {
+          p.opcoes.forEach((o,oi) => {
+            const inp = document.querySelector(`#opc-row-${bi}-${pi}-${oi} .opcao-input`);
+            if (inp) o.texto = inp.value;
+          });
+        }
+      });
+    });
   }
 
+  // ── ETAPA 3 ──
   function renderEtapa3() {
     const c = document.getElementById('content');
-    const todasPergs = [];
-    dados.scenarios.forEach((sc, si) => {
-      sc.questions.forEach((q, qi) => {
-        todasPergs.push({ si, qi, title: sc.title, text: q.text, criteria: q.criteria || [] });
+    let html = `
+      <h2 class="sec-title">Critérios e gabarito</h2>
+      <p class="sec-sub">Para perguntas <strong>dissertativas</strong>, defina os critérios de avaliação (notas 1 a 5). Perguntas de seleção são corrigidas automaticamente.</p>`;
+
+    let temDissertativa = false;
+    dados.blocos.forEach((bl, bi) => {
+      bl.perguntas.forEach((p, pi) => {
+        const label = `${bl.tipo==='cenario'?'Cenário':'Questão'} ${bi+1}${bl.perguntas.length>1?' · Pergunta '+(pi+1):''}`;
+        if (p.tipo === 'dissertativa') {
+          temDissertativa = true;
+          html += `
+            <div class="criterio-block">
+              <div class="criterio-header">
+                <div>
+                  <div class="criterio-perg-num">${esc(label)} — ${esc(bl.title||'Sem título')}</div>
+                  <div class="criterio-perg-txt">${esc(p.texto||'Pergunta sem texto')}</div>
+                </div>
+                <button class="btn-sugerir" onclick="sugerirCriterios(${bi},${pi})">✨ Sugerir</button>
+              </div>
+              <div class="criterio-notas" id="notas-${bi}-${pi}">
+                ${[1,2,3,4,5].map(n => {
+                  const val = p.criteria?.find(cr=>cr.score===n)?.description||'';
+                  return `<div class="nota-row">
+                    <div class="nota-label nota-${n}">${n}</div>
+                    <input class="nota-input" type="text" id="crit-${bi}-${pi}-${n}"
+                      placeholder="${placeholderNota(n)}" value="${esc(val)}"
+                      oninput="salvarCriterio(${bi},${pi},${n},this.value)">
+                  </div>`;
+                }).join('')}
+              </div>
+            </div>`;
+        } else {
+          const correta = p.opcoes?.find(o=>o.correta)?.texto || '—';
+          html += `
+            <div class="criterio-block">
+              <div class="criterio-header">
+                <div>
+                  <div class="criterio-perg-num">${esc(label)} — ${esc(bl.title||'Sem título')}</div>
+                  <div class="criterio-perg-txt">${esc(p.texto||'Pergunta sem texto')}</div>
+                </div>
+              </div>
+              <div style="padding:16px 20px">
+                <div class="auto-corr">✅ Corrigida automaticamente — resposta correta: <strong style="margin-left:4px">${esc(correta)}</strong></div>
+              </div>
+            </div>`;
+        }
       });
     });
 
-    if (todasPergs.length === 0) {
-      c.innerHTML = `
-        <h2 class="sec-title">Critérios de avaliação</h2>
-        <p class="sec-sub" style="color:var(--yellow)">⚠️ Adicione perguntas nos cenários antes de definir os critérios.</p>`;
-      return;
+    if (!temDissertativa) {
+      html += `<div class="auto-corr" style="margin-top:8px">✅ Todas as perguntas são de seleção — corrigidas automaticamente.</div>`;
     }
 
-    c.innerHTML = `
-      <h2 class="sec-title">Critérios de avaliação</h2>
-      <p class="sec-sub">Para cada pergunta, defina o que caracteriza cada nota de 1 a 5. Isso vai aparecer ao lado das respostas dos candidatos na hora de avaliar.</p>
-      ${todasPergs.map(({si, qi, title, text, criteria}) => `
-        <div class="criterio-block">
-          <div class="criterio-header" style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px">
-            <div>
-              <div class="criterio-perg-num">Cenário ${si+1} — ${esc(title || 'Sem título')} · Pergunta ${qi+1}</div>
-              <div class="criterio-perg-txt">${esc(text || 'Pergunta sem texto')}</div>
-            </div>
-            <button class="btn-sugerir" onclick="sugerirCriterios(${si},${qi})">✨ Sugerir critérios</button>
-          </div>
-          <div class="criterio-notas" id="notas-${si}-${qi}">
-            ${[1,2,3,4,5].map(n => {
-              const val = criteria.find(c => c.score === n)?.description || '';
-              return `
-                <div class="nota-row">
-                  <div class="nota-label nota-${n}">${n}</div>
-                  <input class="nota-input" type="text"
-                    id="crit-${si}-${qi}-${n}"
-                    placeholder="${placeholderNota(n)}"
-                    value="${esc(val)}"
-                    oninput="salvarCriterio(${si},${qi},${n},this.value)">
-                </div>`;
-            }).join('')}
-          </div>
-        </div>`).join('')}`;
+    c.innerHTML = html;
+    document.getElementById('btn-anterior').style.display='inline-flex';
+    document.getElementById('btn-proximo').textContent='✦ Salvar processo';
+    document.getElementById('footer-info').innerHTML='Etapa <strong>3 de 3</strong> — Critérios de avaliação';
   }
 
   function placeholderNota(n) {
-    const p = {
-      1: 'Resposta muito superficial, sem embasamento…',
-      2: 'Identifica o problema mas a abordagem é incompleta…',
-      3: 'Resposta adequada com raciocínio claro…',
-      4: 'Resposta completa com boa estrutura e exemplos…',
-      5: 'Resposta excepcional, demonstra domínio total…'
-    };
-    return p[n];
+    return {1:'Resposta muito superficial…',2:'Identifica o problema mas incompleto…',3:'Resposta adequada com raciocínio claro…',4:'Resposta completa com exemplos práticos…',5:'Resposta excepcional, demonstra domínio total…'}[n];
   }
 
-  // Critérios sugeridos genéricos
-  const CRITERIOS_SUGERIDOS = {
-    1: 'Resposta muito superficial ou fora do contexto, sem demonstrar compreensão do problema.',
-    2: 'Identifica o problema mas a abordagem é incompleta, confusa ou sem justificativa.',
-    3: 'Resposta adequada com raciocínio claro e organizado, atende ao esperado para a vaga.',
-    4: 'Resposta completa, bem estruturada, com exemplos práticos e boa comunicação.',
-    5: 'Resposta excepcional — demonstra domínio total, visão estratégica e proatividade.'
-  };
+  const CRITERIOS_SUGERIDOS = {1:'Resposta muito superficial ou fora do contexto, sem demonstrar compreensão do problema.',2:'Identifica o problema mas a abordagem é incompleta, confusa ou sem justificativa.',3:'Resposta adequada com raciocínio claro e organizado, atende ao esperado para a vaga.',4:'Resposta completa, bem estruturada, com exemplos práticos e boa comunicação.',5:'Resposta excepcional — demonstra domínio total, visão estratégica e proatividade.'};
 
-  window.sugerirCriterios = function(si, qi) {
-    const btn = document.querySelector(`[onclick="sugerirCriterios(${si},${qi})"]`);
-    if (btn) { btn.textContent = '✓ Aplicado!'; btn.style.color = 'var(--green)'; setTimeout(() => { btn.textContent = '✨ Sugerir critérios'; btn.style.color = ''; }, 2000); }
+  window.sugerirCriterios = function(bi, pi) {
+    const btn = document.querySelector(`[onclick="sugerirCriterios(${bi},${pi})"]`);
+    if (btn){btn.textContent='✓ Aplicado!';btn.style.color='var(--green)';setTimeout(()=>{btn.textContent='✨ Sugerir';btn.style.color='';},2000);}
     [1,2,3,4,5].forEach(n => {
-      const input = document.getElementById(`crit-${si}-${qi}-${n}`);
-      if (input) { input.value = CRITERIOS_SUGERIDOS[n]; salvarCriterio(si, qi, n, CRITERIOS_SUGERIDOS[n]); }
+      const input = document.getElementById(`crit-${bi}-${pi}-${n}`);
+      if (input){input.value=CRITERIOS_SUGERIDOS[n];salvarCriterio(bi,pi,n,CRITERIOS_SUGERIDOS[n]);}
     });
   };
 
-  window.salvarCriterio = function(si, qi, score, desc) {
-    if (!dados.scenarios[si]?.questions[qi]) return;
-    let crit = dados.scenarios[si].questions[qi].criteria || [];
-    const idx = crit.findIndex(c => c.score === score);
-    if (idx >= 0) crit[idx].description = desc;
-    else crit.push({ score, description: desc });
-    dados.scenarios[si].questions[qi].criteria = crit;
+  window.salvarCriterio = function(bi, pi, score, desc) {
+    if (!dados.blocos[bi]?.perguntas[pi]) return;
+    let crit = dados.blocos[bi].perguntas[pi].criteria || [];
+    const idx = crit.findIndex(c=>c.score===score);
+    if (idx>=0) crit[idx].description=desc; else crit.push({score,description:desc});
+    dados.blocos[bi].perguntas[pi].criteria = crit;
   };
 
-  // ── CENÁRIOS ──
-  window.toggleCenario = function(si) {
-    const body = document.getElementById(`cb-${si}`);
-    const chev = document.getElementById(`chev-${si}`);
-    body.classList.toggle('open');
-    chev.classList.toggle('open');
+  // ── NAVEGAÇÃO ──
+  window.renderEtapa = function(n) {
+    etapa=n; atualizarSteps();
+    if (n===1) renderEtapa1();
+    else if (n===2) renderEtapa2();
+    else if (n===3) renderEtapa3();
   };
 
-  window.adicionarCenario = function() {
-    coletarDadosEtapa2();
-    dados.scenarios.push(novoCenario(dados.scenarios.length + 1));
-    renderCenarios();
-    document.getElementById('footer-info').innerHTML = `Etapa <strong>2 de 3</strong> — <strong>${dados.scenarios.length}</strong> cenário(s)`;
-  };
-
-  window.removerCenario = function(si) {
-    if (dados.scenarios.length === 1) { toast('O processo precisa ter ao menos um cenário.'); return; }
-    if (!confirm('Remover este cenário e todas as suas perguntas?')) return;
-    coletarDadosEtapa2();
-    dados.scenarios.splice(si, 1);
-    renderCenarios();
-  };
-
-  window.adicionarPergunta = function(si) {
-    coletarDadosEtapa2();
-    dados.scenarios[si].questions.push({ text: '', criteria: [] });
-    renderCenarios();
-    // Re-abre o cenário correto
-    const body = document.getElementById(`cb-${si}`);
-    if (body) body.classList.add('open');
-  };
-
-  window.removerPergunta = function(si, qi) {
-    if (dados.scenarios[si].questions.length === 1) { toast('O cenário precisa ter ao menos uma pergunta.'); return; }
-    coletarDadosEtapa2();
-    dados.scenarios[si].questions.splice(qi, 1);
-    renderCenarios();
-    const body = document.getElementById(`cb-${si}`);
-    if (body) body.classList.add('open');
-  };
-
-  function novoCenario(n) {
-    return { title: '', context: '', questions: [{ text: '', criteria: [] }] };
-  }
-
-  // ── COLETA DADOS ──
-  function coletarDadosEtapa1() {
-    dados.title    = document.getElementById('f-titulo')?.value.trim() || dados.title;
-    dados.role     = document.getElementById('f-cargo')?.value.trim()  || dados.role;
-    dados.area     = document.getElementById('f-area')?.value.trim()   || dados.area;
-    dados.deadline = document.getElementById('f-prazo')?.value         || dados.deadline;
-  }
-
-  function coletarDadosEtapa2() {
-    dados.scenarios.forEach((sc, si) => {
-      sc.title   = document.getElementById(`sc-title-${si}`)?.value ?? sc.title;
-      sc.context = document.getElementById(`sc-ctx-${si}`)?.value   ?? sc.context;
-      sc.questions.forEach((q, qi) => {
-        const el = document.getElementById(`pq-${si}-${qi}`)?.querySelector('textarea');
-        if (el) q.text = el.value;
-      });
-    });
-  }
-
-  // ── NAVEGAR ──
   window.proximo = function() {
-    if (etapa === 1) {
-      coletarDadosEtapa1();
-      if (!dados.title || !dados.role || !dados.area || !dados.deadline) {
-        toast('Preencha todos os campos antes de continuar.'); return;
-      }
+    if (etapa===1) {
+      coletarEtapa1();
+      if (!dados.title||!dados.role||!dados.area||!dados.deadline){toast('Preencha todos os campos.');return;}
       renderEtapa(2);
-    } else if (etapa === 2) {
-      coletarDadosEtapa2();
-      const semTitulo = dados.scenarios.some(s => !s.title.trim());
-      if (semTitulo) { toast('Todos os cenários precisam ter um título.'); return; }
-      const semPerg = dados.scenarios.some(s => s.questions.every(q => !q.text.trim()));
-      if (semPerg) { toast('Cada cenário precisa ter ao menos uma pergunta.'); return; }
+    } else if (etapa===2) {
+      coletarBlocos();
+      if (dados.blocos.some(b=>!b.title.trim())){toast('Todos os blocos precisam ter título.');return;}
       renderEtapa(3);
-    } else if (etapa === 3) {
+    } else if (etapa===3) {
       salvarProcesso();
     }
   };
 
   window.anterior = function() {
-    if (etapa === 2) { coletarDadosEtapa2(); renderEtapa(1); }
-    else if (etapa === 3) renderEtapa(2);
+    if (etapa===2){coletarBlocos();renderEtapa(1);}
+    else if (etapa===3) renderEtapa(2);
   };
 
   window.irPara = function(n) {
-    if (n > etapa) return; // só volta
-    if (etapa === 1) coletarDadosEtapa1();
-    if (etapa === 2) coletarDadosEtapa2();
+    if (n>etapa) return;
+    if (etapa===1) coletarEtapa1();
+    if (etapa===2) coletarBlocos();
     renderEtapa(n);
   };
 
+  function coletarEtapa1() {
+    dados.title    = document.getElementById('f-titulo')?.value.trim()||dados.title;
+    dados.role     = document.getElementById('f-cargo')?.value.trim()||dados.role;
+    dados.area     = document.getElementById('f-area')?.value.trim()||dados.area;
+    dados.deadline = document.getElementById('f-prazo')?.value||dados.deadline;
+  }
+
   // ── SALVAR ──
   window.salvarRascunho = async function() {
-    if (etapa === 1) coletarDadosEtapa1();
-    if (etapa === 2) coletarDadosEtapa2();
+    if (etapa===1) coletarEtapa1();
+    if (etapa===2) coletarBlocos();
     await salvarNoFirestore('draft');
     toast('✅ Rascunho salvo!');
   };
 
   async function salvarProcesso() {
-    coletarDadosEtapa2();
+    coletarBlocos();
     const btn = document.getElementById('btn-proximo');
-    btn.disabled = true;
-    btn.textContent = 'Salvando…';
+    btn.disabled=true; btn.textContent='Salvando…';
     await salvarNoFirestore('draft');
-    btn.disabled = false;
-    btn.textContent = '✦ Salvar processo';
+    btn.disabled=false; btn.textContent='✦ Salvar processo';
     toast('✅ Processo salvo! Publique no painel quando estiver pronto.');
-    setTimeout(() => window.location.href = 'painel.html', 2000);
+    setTimeout(()=>window.location.href='painel.html',2000);
   }
 
   async function salvarNoFirestore(status) {
     if (!currentUser) return;
     try {
       const payload = {
-        ownerUid: currentUser.uid,
-        ownerEmail: currentUser.email,
-        title: dados.title,
-        role: dados.role,
-        area: dados.area,
-        deadline: dados.deadline ? new Date(dados.deadline + 'T23:59:00') : null,
-        status,
-        scenarios: dados.scenarios,
+        ownerUid: currentUser.uid, ownerEmail: currentUser.email,
+        title: dados.title, role: dados.role, area: dados.area,
+        deadline: dados.deadline ? new Date(dados.deadline+'T23:59:00') : null,
+        status, blocos: dados.blocos,
+        // Compatibilidade com formato antigo
+        scenarios: dados.blocos.map(bl=>({
+          title: bl.title, context: bl.context||'',
+          questions: bl.perguntas.map(p=>({text:p.texto,criteria:p.criteria||[]}))
+        })),
         updatedAt: serverTimestamp(),
       };
       if (!processId) {
         payload.createdAt = serverTimestamp();
-        const { addDoc, collection } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
-        const ref = await addDoc(collection(db, 'processes'), payload);
+        const ref = await addDoc(collection(db,'processes'), payload);
         processId = ref.id;
-        window.history.replaceState({}, '', `?p=${processId}`);
+        window.history.replaceState({},'',`?p=${processId}`);
       } else {
-        await setDoc(doc(db, 'processes', processId), payload, { merge: true });
+        await setDoc(doc(db,'processes',processId), payload, {merge:true});
       }
-    } catch(e) { toast('Erro ao salvar: ' + e.message); }
+    } catch(e) { toast('Erro ao salvar: '+e.message); }
   }
 
-  // ── STEPS VISUAIS ──
   function atualizarSteps() {
-    [1,2,3].forEach(n => {
-      const num = document.getElementById(`sn-${n}`);
-      const lbl = document.getElementById(`sl-${n}`);
-      if (n < etapa) { num.className='step-num done'; num.textContent='✓'; lbl.className='step-label active'; }
-      else if (n === etapa) { num.className='step-num active'; num.textContent=n; lbl.className='step-label active'; }
-      else { num.className='step-num pending'; num.textContent=n; lbl.className='step-label pending'; }
+    [1,2,3].forEach(n=>{
+      const num=document.getElementById(`sn-${n}`),lbl=document.getElementById(`sl-${n}`);
+      if(n<etapa){num.className='step-num done';num.textContent='✓';lbl.className='step-label active';}
+      else if(n===etapa){num.className='step-num active';num.textContent=n;lbl.className='step-label active';}
+      else{num.className='step-num pending';num.textContent=n;lbl.className='step-label pending';}
     });
   }
 
-  // ── UTILS ──
-  function esc(str) { return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-  function toast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.style.display = 'block';
-    setTimeout(() => t.style.display = 'none', 3000);
-  }
-  window.toast = toast;
+  function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+  function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
+  window.toast=toast;
 </script>
-
 </body>
 </html>
