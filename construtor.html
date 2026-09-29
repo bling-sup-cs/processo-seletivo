@@ -76,6 +76,11 @@
   .perg-input::placeholder{color:var(--t1)}
   .btn-remove{background:transparent;border:none;color:var(--t2);cursor:pointer;font-size:16px;padding:0;flex-shrink:0;transition:color .15s;line-height:1}
   .btn-remove:hover{color:var(--red)}
+  .perg-tipo-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .perg-tipo-label{font-size:11px;color:var(--t2);text-transform:uppercase;letter-spacing:.05em}
+  .perg-tipo-btn{background:transparent;border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--t2);cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
+  .perg-tipo-btn:hover{border-color:var(--border2);color:var(--white)}
+  .perg-tipo-btn.active{background:rgba(147,245,116,0.08);border-color:var(--border2);color:var(--green)}
   .add-perg-btn{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--green);background:transparent;border:1px dashed var(--border2);border-radius:10px;padding:10px 14px;cursor:pointer;width:100%;margin-top:10px;font-family:'Inter',sans-serif;transition:all .15s}
   .add-perg-btn:hover{background:rgba(147,245,116,0.04)}
 
@@ -368,6 +373,16 @@
                   value="${esc(bl.title)}"
                   oninput="dados.blocos[${bi}].title=this.value;document.getElementById('bprev-${bi}').textContent=this.value||'Sem título'">
               </div>
+              ${!isCenario ? `
+              <div class="perg-tipo-row" style="margin-top:12px">
+                <span class="perg-tipo-label">Tipo de resposta:</span>
+                <button class="perg-tipo-btn ${(bl.perguntas[0]?.tipo||'dissertativa')==='dissertativa'?'active':''}" onclick="setTipoPergEtapa2(${bi},0,'dissertativa')">✍ Dissertativa</button>
+                <button class="perg-tipo-btn ${(bl.perguntas[0]?.tipo||'dissertativa')==='multipla'?'active':''}" onclick="setTipoPergEtapa2(${bi},0,'multipla')">☑ Múltipla escolha</button>
+                <button class="perg-tipo-btn ${(bl.perguntas[0]?.tipo||'dissertativa')==='simnao'?'active':''}" onclick="setTipoPergEtapa2(${bi},0,'simnao')">◉ Sim / Não</button>
+              </div>
+              <div id="e2-opcoes-${bi}-0" style="margin-top:10px">
+                ${renderE2Opcoes(bi,0,bl.perguntas[0])}
+              </div>` : ''}
               ${isCenario ? `
               <div class="fg">
                 <label>Contexto / situação</label>
@@ -377,13 +392,26 @@
               <div style="margin-top:4px">
                 <div style="font-size:12px;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Perguntas</div>
                 <div id="pergs-${bi}">
-                  ${bl.perguntas.map((p,pi) => `
-                    <div class="perg-simples" id="pq-${bi}-${pi}">
-                      <div class="perg-num">${pi+1}</div>
-                      <textarea class="perg-input" rows="2" placeholder="Escreva a pergunta…"
-                        oninput="dados.blocos[${bi}].perguntas[${pi}].texto=this.value">${esc(p.texto)}</textarea>
-                      ${bl.perguntas.length > 1 ? `<button class="btn-remove" onclick="removerPergunta(${bi},${pi})">×</button>` : ''}
-                    </div>`).join('')}
+                  ${bl.perguntas.map((p,pi) => {
+                    const tipo = p.tipo||'dissertativa';
+                    return `
+                    <div class="perg-simples" id="pq-${bi}-${pi}" style="flex-direction:column;gap:8px">
+                      <div style="display:flex;gap:10px;align-items:flex-start;width:100%">
+                        <div class="perg-num">${pi+1}</div>
+                        <textarea class="perg-input" rows="2" placeholder="Escreva a pergunta…"
+                          oninput="dados.blocos[${bi}].perguntas[${pi}].texto=this.value">${esc(p.texto)}</textarea>
+                        ${bl.perguntas.length > 1 ? `<button class="btn-remove" onclick="removerPergunta(${bi},${pi})">×</button>` : ''}
+                      </div>
+                      <div class="perg-tipo-row" style="padding-left:34px">
+                        <span class="perg-tipo-label">Tipo:</span>
+                        <button class="perg-tipo-btn ${tipo==='dissertativa'?'active':''}" onclick="setTipoPergEtapa2(${bi},${pi},'dissertativa')">✍ Dissertativa</button>
+                        <button class="perg-tipo-btn ${tipo==='multipla'?'active':''}" onclick="setTipoPergEtapa2(${bi},${pi},'multipla')">☑ Múltipla escolha</button>
+                        <button class="perg-tipo-btn ${tipo==='simnao'?'active':''}" onclick="setTipoPergEtapa2(${bi},${pi},'simnao')">◉ Sim / Não</button>
+                      </div>
+                      <div id="e2-opcoes-${bi}-${pi}" style="padding-left:34px">
+                        ${renderE2Opcoes(bi,pi,p)}
+                      </div>
+                    </div>`}).join('')}
                 </div>
                 <button class="add-perg-btn" onclick="adicionarPergunta(${bi})">+ Adicionar pergunta</button>
               </div>` : ''}
@@ -395,9 +423,100 @@
     if (addMais) addMais.style.display = dados.blocos.length > 0 ? 'block' : 'none';
   }
 
+  function renderE2Opcoes(bi, pi, p) {
+    const tipo = p.tipo || 'dissertativa';
+    if (tipo === 'dissertativa') return '';
+    if (tipo === 'simnao') {
+      const correta = p.opcoes?.[0]?.correta ? 'sim' : p.opcoes?.[1]?.correta ? 'nao' : '';
+      return `<div style="margin-top:8px">
+        <div style="font-size:11px;color:var(--t2);margin-bottom:6px">Marque a resposta correta:</div>
+        <div class="sim-nao-wrap">
+          <div class="sim-nao-opt ${correta==='sim'?'correta':''}" onclick="setSimNaoE2(${bi},${pi},'sim')">
+            <input type="radio" name="sn2-${bi}-${pi}" ${correta==='sim'?'checked':''} readonly><span>Sim</span>
+          </div>
+          <div class="sim-nao-opt ${correta==='nao'?'correta':''}" onclick="setSimNaoE2(${bi},${pi},'nao')">
+            <input type="radio" name="sn2-${bi}-${pi}" ${correta==='nao'?'checked':''} readonly><span>Não</span>
+          </div>
+        </div>
+      </div>`;
+    }
+    if (tipo === 'multipla') {
+      const opcoes = p.opcoes && p.opcoes.length ? p.opcoes : [{texto:'',correta:true},{texto:'',correta:false}];
+      if (!p.opcoes || p.opcoes.length === 0) dados.blocos[bi].perguntas[pi].opcoes = opcoes;
+      return `<div style="margin-top:8px">
+        <div style="font-size:11px;color:var(--t2);margin-bottom:6px">Opções — selecione ● a correta:</div>
+        <div class="opcoes-wrap" id="e2-opc-${bi}-${pi}">
+          ${opcoes.map((o,oi) => `
+            <div class="opcao-row" id="e2-opc-row-${bi}-${pi}-${oi}">
+              <input type="radio" class="opcao-radio" name="e2opc-${bi}-${pi}" ${o.correta?'checked':''} onclick="setOpcaoCorretaE2(${bi},${pi},${oi})">
+              <input class="opcao-input" type="text" placeholder="Opção ${oi+1}…" value="${esc(o.texto)}"
+                oninput="dados.blocos[${bi}].perguntas[${pi}].opcoes[${oi}].texto=this.value">
+              ${opcoes.length > 2 ? `<button class="btn-remove-sm" onclick="removerOpcaoE2(${bi},${pi},${oi})">×</button>` : ''}
+            </div>`).join('')}
+        </div>
+        <button class="add-opcao-btn" onclick="adicionarOpcaoE2(${bi},${pi})">+ Adicionar opção</button>
+      </div>`;
+    }
+    return '';
+  }
+
+  window.setSimNaoE2 = (bi,pi,val) => {
+    dados.blocos[bi].perguntas[pi].opcoes=[{texto:'Sim',correta:val==='sim'},{texto:'Não',correta:val==='nao'}];
+    const wrap=document.getElementById(`e2-opcoes-${bi}-${pi}`);
+    if(wrap) wrap.innerHTML=renderE2Opcoes(bi,pi,dados.blocos[bi].perguntas[pi]);
+  };
+
+  window.setOpcaoCorretaE2 = (bi,pi,oi) => {
+    dados.blocos[bi].perguntas[pi].opcoes.forEach((o,i)=>o.correta=i===oi);
+  };
+
+  window.adicionarOpcaoE2 = (bi,pi) => {
+    coletarOpcoes();
+    dados.blocos[bi].perguntas[pi].opcoes.push({texto:'',correta:false});
+    const wrap=document.getElementById(`e2-opcoes-${bi}-${pi}`);
+    if(wrap) wrap.innerHTML=renderE2Opcoes(bi,pi,dados.blocos[bi].perguntas[pi]);
+  };
+
+  window.removerOpcaoE2 = (bi,pi,oi) => {
+    coletarOpcoes();
+    dados.blocos[bi].perguntas[pi].opcoes.splice(oi,1);
+    const wrap=document.getElementById(`e2-opcoes-${bi}-${pi}`);
+    if(wrap) wrap.innerHTML=renderE2Opcoes(bi,pi,dados.blocos[bi].perguntas[pi]);
+  };
+
+  function coletarOpcoes() {
+    dados.blocos.forEach((bl,bi) => {
+      bl.perguntas.forEach((p,pi) => {
+        if (p.tipo==='multipla' && p.opcoes) {
+          p.opcoes.forEach((o,oi) => {
+            const inp = document.querySelector(`#e2-opc-row-${bi}-${pi}-${oi} .opcao-input`);
+            if (inp) o.texto = inp.value;
+          });
+        }
+      });
+    });
+  }
+
   function atualizarFooter2() {
     document.getElementById('footer-info').innerHTML=`Etapa <strong>2 de 4</strong> — <strong>${dados.blocos.length}</strong> bloco(s)`;
   }
+
+  window.setTipoPergEtapa2 = (bi, pi, tipo) => {
+    coletarBlocos();
+    const p = dados.blocos[bi].perguntas[pi];
+    p.tipo = tipo;
+    if (tipo==='multipla' && (!p.opcoes||p.opcoes.length===0)) p.opcoes=[{texto:'',correta:true},{texto:'',correta:false}];
+    if (tipo==='simnao') p.opcoes=[{texto:'Sim',correta:false},{texto:'Não',correta:false}];
+    if (tipo==='dissertativa') p.opcoes=[];
+    // Atualiza botões ativos
+    ['dissertativa','multipla','simnao'].forEach(t => {
+      const btn = document.querySelector(`[onclick="setTipoPergEtapa2(${bi},${pi},'${t}')"]`);
+      if (btn) btn.classList.toggle('active', t===tipo);
+    });
+    // Atualiza opções inline sem re-renderizar tudo
+    const wrap = document.getElementById(`e2-opcoes-${bi}-${pi}`);
+    if (wrap) wrap.innerHTML = renderE2Opcoes(bi,pi,p);
+  };
 
   window.toggleBloco = bi => {
     document.getElementById(`bb-${bi}`)?.classList.toggle('open');
@@ -436,9 +555,18 @@
       bl.title   = document.getElementById(`bl-title-${bi}`)?.value ?? bl.title;
       bl.context = document.getElementById(`bl-ctx-${bi}`)?.value   ?? bl.context;
       bl.perguntas.forEach((p,pi) => {
-        if (bl.tipo === 'questao') { p.texto = bl.title; return; }
-        const el = document.getElementById(`pq-${bi}-${pi}`)?.querySelector('textarea.perg-input');
-        if (el) p.texto = el.value;
+        if (bl.tipo === 'questao') { p.texto = bl.title; }
+        else {
+          const el = document.getElementById(`pq-${bi}-${pi}`)?.querySelector('textarea.perg-input');
+          if (el) p.texto = el.value;
+        }
+        // Coletar opções de texto
+        if (p.tipo==='multipla' && p.opcoes) {
+          p.opcoes.forEach((o,oi) => {
+            const inp = document.querySelector(`#e2-opc-row-${bi}-${pi}-${oi} .opcao-input`);
+            if (inp) o.texto = inp.value;
+          });
+        }
       });
     });
   }
@@ -490,33 +618,17 @@
     const tipo = p.tipo || 'dissertativa';
     let html = '';
 
-    if (tipo === 'simnao') {
-      const correta = p.opcoes?.[0]?.correta ? 'sim' : p.opcoes?.[1]?.correta ? 'nao' : '';
+    if (tipo === 'simnao' || tipo === 'multipla') {
+      // Seleção: só mostra gabarito (opções já definidas na etapa 2)
+      const correta = p.opcoes?.find(o=>o.correta)?.texto || '—';
       html += `<div>
-        <div style="font-size:12px;color:var(--t2);margin-bottom:8px">Clique para marcar a resposta correta:</div>
-        <div class="sim-nao-wrap">
-          <div class="sim-nao-opt ${correta==='sim'?'correta':''}" onclick="setSimNao(${bi},${pi},'sim')">
-            <input type="radio" name="sn-${bi}-${pi}" ${correta==='sim'?'checked':''} readonly><span>Sim</span>
-          </div>
-          <div class="sim-nao-opt ${correta==='nao'?'correta':''}" onclick="setSimNao(${bi},${pi},'nao')">
-            <input type="radio" name="sn-${bi}-${pi}" ${correta==='nao'?'checked':''} readonly><span>Não</span>
-          </div>
+        <div style="padding:12px 16px;background:rgba(147,245,116,0.05);border:1px solid var(--border2);border-radius:10px;font-size:13px;color:var(--green);margin-bottom:12px">
+          ✅ Resposta correta definida na etapa anterior: <strong style="color:var(--white);margin-left:4px">${esc(correta)}</strong>
         </div>
-      </div>`;
-    } else if (tipo === 'multipla') {
-      const opcoes = p.opcoes && p.opcoes.length ? p.opcoes : [{texto:'',correta:true},{texto:'',correta:false}];
-      html += `<div>
-        <div style="font-size:12px;color:var(--t2);margin-bottom:8px">Adicione as opções e selecione ● a correta:</div>
-        <div class="opcoes-wrap" id="opc-${bi}-${pi}">
-          ${opcoes.map((o,oi) => `
-            <div class="opcao-row" id="opc-row-${bi}-${pi}-${oi}">
-              <input type="radio" class="opcao-radio" name="opc-${bi}-${pi}" ${o.correta?'checked':''} onclick="setOpcaoCorreta(${bi},${pi},${oi})">
-              <input class="opcao-input" type="text" placeholder="Opção ${oi+1}…" value="${esc(o.texto)}"
-                oninput="dados.blocos[${bi}].perguntas[${pi}].opcoes[${oi}].texto=this.value">
-              ${opcoes.length > 2 ? `<button class="btn-remove-sm" onclick="removerOpcao(${bi},${pi},${oi})">×</button>` : ''}
-            </div>`).join('')}
-        </div>
-        <button class="add-opcao-btn" onclick="adicionarOpcao(${bi},${pi})">+ Adicionar opção</button>
+        <div class="gabarito-label">📋 Gabarito / observação adicional (opcional)</div>
+        <textarea class="gabarito-input" id="gab-${bi}-${pi}"
+          placeholder="Adicione uma explicação ou contexto sobre a resposta correta…"
+          oninput="dados.blocos[${bi}].perguntas[${pi}].gabarito=this.value" rows="2">${esc(p.gabarito||'')}</textarea>
       </div>`;
     } else {
       // Dissertativa: critérios + gabarito
