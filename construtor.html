@@ -175,6 +175,27 @@
   .footer-btns{display:flex;gap:10px}
   .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#011918;border:1px solid var(--border2);border-radius:12px;padding:12px 24px;font-size:13px;color:var(--green);display:none;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,0.6);pointer-events:none;white-space:nowrap}
 
+  /* ETAPA 4 PONTUAÇÃO */
+  .valor-total-wrap{display:flex;align-items:flex-end;gap:16px;margin-bottom:28px;flex-wrap:wrap}
+  .btn-distribuir{background:rgba(147,245,116,0.08);border:1px solid var(--border2);border-radius:10px;padding:10px 18px;font-size:13px;color:var(--green);font-family:'Inter',sans-serif;cursor:pointer;transition:all .15s;white-space:nowrap}
+  .btn-distribuir:hover{background:rgba(147,245,116,0.15)}
+  .peso-table{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:16px}
+  .peso-table-header{display:grid;grid-template-columns:1fr 160px 100px;gap:0;padding:10px 20px;background:rgba(0,0,0,0.15);font-size:11px;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border)}
+  .peso-row{display:grid;grid-template-columns:1fr 160px 100px;gap:0;padding:12px 20px;border-bottom:1px solid var(--border);align-items:center;transition:background .15s}
+  .peso-row:last-child{border-bottom:none}
+  .peso-row:hover{background:rgba(147,245,116,0.02)}
+  .peso-row-label{font-size:13px;color:var(--white);line-height:1.4}
+  .peso-row-tipo{padding:0 8px}
+  .tipo-pill{font-size:11px;padding:2px 8px;border-radius:99px;background:rgba(255,255,255,0.05);color:var(--t2);border:1px solid var(--border)}
+  .peso-row-input{display:flex;justify-content:flex-end}
+  .peso-input{width:80px;background:rgba(0,0,0,0.2);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--white);font-size:14px;font-weight:600;font-family:'Inter',sans-serif;outline:none;text-align:center;transition:border-color .2s}
+  .peso-input:focus{border-color:var(--green)}
+  .soma-wrap{border-radius:10px;padding:12px 18px;font-size:13px;line-height:1.5;border:1px solid}
+  .soma-wrap.ok{background:rgba(147,245,116,0.06);border-color:var(--border2);color:var(--green)}
+  .soma-wrap.over{background:rgba(229,91,91,0.06);border-color:rgba(229,91,91,0.3);color:var(--red)}
+  .soma-wrap.under{background:rgba(246,195,67,0.06);border-color:rgba(246,195,67,0.3);color:var(--yellow)}
+  .soma-wrap strong{color:var(--white)}
+
   @media(max-width:640px){
     .hdr,.steps-bar,.footer-bar{padding-left:20px;padding-right:20px}
     .content{padding:28px 20px 100px}
@@ -201,6 +222,8 @@
   <div class="step-item" onclick="irPara(2)"><div class="step-num pending" id="sn-2">2</div><span class="step-label pending" id="sl-2">Cenários e questões</span></div>
   <div class="step-divider"></div>
   <div class="step-item" onclick="irPara(3)"><div class="step-num pending" id="sn-3">3</div><span class="step-label pending" id="sl-3">Critérios e gabarito</span></div>
+  <div class="step-divider"></div>
+  <div class="step-item" onclick="irPara(4)"><div class="step-num pending" id="sn-4">4</div><span class="step-label pending" id="sl-4">Pontuação</span></div>
 </div>
 
 <div class="content" id="content"></div>
@@ -240,7 +263,7 @@
 
   // Estrutura de dados
   // bloco: { tipo: 'cenario'|'questao', title, context, perguntas: [{ texto, tipo: 'dissertativa'|'multipla'|'simnao', opcoes: [{texto, correta}], gabarito, criteria: [{score,description}] }] }
-  let dados = { title:'', role:'', area:'', deadline:'', blocos:[] };
+  let dados = { title:'', role:'', area:'', deadline:'', blocos:[], valorTotal:10 };
 
   onAuthStateChanged(auth, async user => {
     if (!user) { window.location.href = 'index.html'; return; }
@@ -261,6 +284,7 @@
         // Suporte ao formato antigo (scenarios) e novo (blocos)
         if (d.blocos) {
           dados.blocos = d.blocos;
+        dados.valorTotal = d.valorTotal || 10;
         } else if (d.scenarios) {
           dados.blocos = d.scenarios.map(sc => ({
             tipo: 'cenario', title: sc.title, context: sc.context,
@@ -595,6 +619,14 @@
     dados.blocos.forEach((bl, bi) => {
       bl.perguntas.forEach((p, pi) => {
         const label = `${bl.tipo==='cenario'?'Cenário':'Questão'} ${bi+1}${bl.perguntas.length>1?' · Pergunta '+(pi+1):''}`;
+        const gabVal = p.gabarito || '';
+        const gabField = `
+          <div class="gabarito-wrap" style="padding:0 20px 16px">
+            <div class="gabarito-label">📋 Gabarito / resposta esperada</div>
+            <textarea class="gabarito-input" id="gab-${bi}-${pi}" placeholder="Descreva a resposta ideal para esta pergunta…"
+              oninput="dados.blocos[${bi}].perguntas[${pi}].gabarito=this.value" rows="2">${esc(gabVal)}</textarea>
+          </div>`;
+
         if (p.tipo === 'dissertativa') {
           temDissertativa = true;
           html += `
@@ -617,6 +649,7 @@
                   </div>`;
                 }).join('')}
               </div>
+              ${gabField}
             </div>`;
         } else {
           const correta = p.opcoes?.find(o=>o.correta)?.texto || '—';
@@ -631,6 +664,7 @@
               <div style="padding:16px 20px">
                 <div class="auto-corr">✅ Corrigida automaticamente — resposta correta: <strong style="margin-left:4px">${esc(correta)}</strong></div>
               </div>
+              ${gabField}
             </div>`;
         }
       });
@@ -642,8 +676,8 @@
 
     c.innerHTML = html;
     document.getElementById('btn-anterior').style.display='inline-flex';
-    document.getElementById('btn-proximo').textContent='✦ Salvar processo';
-    document.getElementById('footer-info').innerHTML='Etapa <strong>3 de 3</strong> — Critérios de avaliação';
+    document.getElementById('btn-proximo').textContent='Próximo →';
+    document.getElementById('footer-info').innerHTML='Etapa <strong>3 de 4</strong> — Critérios e gabarito';
   }
 
   function placeholderNota(n) {
@@ -683,6 +717,7 @@
     if (n===1) renderEtapa1();
     else if (n===2) renderEtapa2();
     else if (n===3) renderEtapa3();
+    else if (n===4) renderEtapa4();
   };
 
   window.proximo = function() {
@@ -692,9 +727,12 @@
       renderEtapa(2);
     } else if (etapa===2) {
       coletarBlocos();
+      if (dados.blocos.length===0){toast('Adicione ao menos um cenário ou questão.');return;}
       if (dados.blocos.some(b=>!b.title.trim())){toast('Todos os blocos precisam ter título.');return;}
       renderEtapa(3);
     } else if (etapa===3) {
+      renderEtapa(4);
+    } else if (etapa===4) {
       salvarProcesso();
     }
   };
@@ -702,6 +740,7 @@
   window.anterior = function() {
     if (etapa===2){coletarBlocos();renderEtapa(1);}
     else if (etapa===3) renderEtapa(2);
+    else if (etapa===4) renderEtapa(3);
   };
 
   window.irPara = function(n) {
@@ -717,6 +756,107 @@
     dados.area     = document.getElementById('f-area')?.value.trim()||dados.area;
     dados.deadline = document.getElementById('f-prazo')?.value||dados.deadline;
   }
+
+  // ── ETAPA 4 — PONTUAÇÃO ──
+  function renderEtapa4() {
+    const c = document.getElementById('content');
+    const totalPergs = dados.blocos.reduce((acc, bl) => acc + bl.perguntas.length, 0);
+    const valorTotal = dados.valorTotal || 10;
+
+    let pergsList = '';
+    let idx = 0;
+    dados.blocos.forEach((bl, bi) => {
+      bl.perguntas.forEach((p, pi) => {
+        idx++;
+        const peso = p.peso != null ? p.peso : '';
+        const label = bl.tipo === 'cenario'
+          ? `Cenário ${bi+1} · Pergunta ${pi+1} — ${bl.title||'Sem título'}`
+          : `Questão ${bi+1} — ${bl.title||'Sem título'}`;
+        pergsList += `
+          <div class="peso-row" id="prow-${bi}-${pi}">
+            <div class="peso-row-label">${esc(label)}</div>
+            <div class="peso-row-tipo"><span class="tipo-pill">${p.tipo==='dissertativa'?'Dissertativa':p.tipo==='multipla'?'Múltipla escolha':'Sim/Não'}</span></div>
+            <div class="peso-row-input">
+              <input type="number" class="peso-input" id="peso-${bi}-${pi}"
+                min="0" step="0.5" placeholder="0"
+                value="${peso}"
+                oninput="dados.blocos[${bi}].perguntas[${pi}].peso=parseFloat(this.value)||0;atualizarSomaPesos()">
+            </div>
+          </div>`;
+      });
+    });
+
+    c.innerHTML = `
+      <h2 class="sec-title">Pontuação</h2>
+      <p class="sec-sub">Defina o valor total da prova e distribua os pontos entre as perguntas. A soma dos pesos deve ser igual ao valor total.</p>
+
+      <div class="valor-total-wrap">
+        <div class="fg" style="max-width:200px;margin-bottom:0">
+          <label>Valor total da prova</label>
+          <input type="number" id="valor-total" min="1" step="0.5" placeholder="Ex: 10"
+            value="${valorTotal}"
+            oninput="dados.valorTotal=parseFloat(this.value)||10;atualizarSomaPesos()">
+        </div>
+        <button class="btn-distribuir" onclick="distribuirIgualmente()">
+          ⚖️ Distribuir igualmente
+        </button>
+      </div>
+
+      <div class="peso-table">
+        <div class="peso-table-header">
+          <div>Pergunta</div>
+          <div>Tipo</div>
+          <div style="text-align:right">Pontos</div>
+        </div>
+        ${pergsList}
+      </div>
+
+      <div class="soma-wrap" id="soma-wrap">
+        <div class="soma-info" id="soma-info"></div>
+      </div>`;
+
+    document.getElementById('btn-anterior').style.display='inline-flex';
+    document.getElementById('btn-proximo').textContent='✦ Salvar processo';
+    document.getElementById('footer-info').innerHTML='Etapa <strong>4 de 4</strong> — Pontuação';
+    atualizarSomaPesos();
+  }
+
+  window.distribuirIgualmente = function() {
+    const total = dados.valorTotal || 10;
+    const totalPergs = dados.blocos.reduce((acc, bl) => acc + bl.perguntas.length, 0);
+    if (totalPergs === 0) return;
+    const por = Math.round((total / totalPergs) * 100) / 100;
+    dados.blocos.forEach((bl, bi) => {
+      bl.perguntas.forEach((p, pi) => {
+        p.peso = por;
+        const input = document.getElementById(`peso-${bi}-${pi}`);
+        if (input) input.value = por;
+      });
+    });
+    atualizarSomaPesos();
+    toast('✅ Pontos distribuídos igualmente!');
+  };
+
+  window.atualizarSomaPesos = function() {
+    const total = dados.valorTotal || 10;
+    let soma = 0;
+    dados.blocos.forEach(bl => bl.perguntas.forEach(p => soma += parseFloat(p.peso) || 0));
+    soma = Math.round(soma * 100) / 100;
+    const diff = Math.round((soma - total) * 100) / 100;
+    const wrap = document.getElementById('soma-wrap');
+    const info = document.getElementById('soma-info');
+    if (!wrap || !info) return;
+    if (diff === 0) {
+      wrap.className = 'soma-wrap ok';
+      info.innerHTML = `✓ Soma dos pontos: <strong>${soma}</strong> — igual ao valor total da prova`;
+    } else if (diff > 0) {
+      wrap.className = 'soma-wrap over';
+      info.innerHTML = `⚠️ Soma dos pontos: <strong>${soma}</strong> — excede o total em <strong>${diff}</strong> ponto(s)`;
+    } else {
+      wrap.className = 'soma-wrap under';
+      info.innerHTML = `⚠️ Soma dos pontos: <strong>${soma}</strong> — faltam <strong>${Math.abs(diff)}</strong> ponto(s) para atingir o total`;
+    }
+  };
 
   // ── SALVAR ──
   window.salvarRascunho = async function() {
@@ -743,7 +883,7 @@
         ownerUid: currentUser.uid, ownerEmail: currentUser.email,
         title: dados.title, role: dados.role, area: dados.area,
         deadline: dados.deadline ? new Date(dados.deadline+'T23:59:00') : null,
-        status, blocos: dados.blocos,
+        status, blocos: dados.blocos, valorTotal: dados.valorTotal || 10,
         // Compatibilidade com formato antigo
         scenarios: dados.blocos.map(bl=>({
           title: bl.title, context: bl.context||'',
@@ -763,8 +903,9 @@
   }
 
   function atualizarSteps() {
-    [1,2,3].forEach(n=>{
+    [1,2,3,4].forEach(n=>{
       const num=document.getElementById(`sn-${n}`),lbl=document.getElementById(`sl-${n}`);
+      if (!num) return;
       if(n<etapa){num.className='step-num done';num.textContent='✓';lbl.className='step-label active';}
       else if(n===etapa){num.className='step-num active';num.textContent=n;lbl.className='step-label active';}
       else{num.className='step-num pending';num.textContent=n;lbl.className='step-label pending';}
