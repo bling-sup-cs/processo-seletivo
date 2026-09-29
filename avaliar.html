@@ -228,6 +228,13 @@
       const pSnap = await getDoc(doc(db, 'processes', window.processId));
       if (!pSnap.exists()) { alert('Processo não encontrado.'); window.location.href = 'painel.html'; return; }
       processo = { id: pSnap.id, ...pSnap.data() };
+      // Normaliza para formato de blocos
+      if (!processo.blocos && processo.scenarios) {
+        processo.blocos = processo.scenarios.map(sc=>({
+          tipo:'cenario', title:sc.title, context:sc.context,
+          perguntas:(sc.questions||[]).map(q=>({texto:q.text,tipo:'dissertativa',opcoes:[],gabarito:'',criteria:q.criteria||[]}))
+        }));
+      }
       document.getElementById('hdr-titulo').textContent = processo.title;
       document.getElementById('hdr-sub').textContent = `${processo.role} · ${processo.area}`;
 
@@ -309,6 +316,7 @@
     const c = candidatoAtual;
     const totalScore = calcularMedia();
     const scroll = document.getElementById('main-scroll');
+    const blocos = processo.blocos || [];
 
     const submittedAt = c.submittedAt
       ? new Date(c.submittedAt.seconds * 1000).toLocaleDateString('pt-BR', {day:'2-digit',month:'long',hour:'2-digit',minute:'2-digit'})
@@ -327,34 +335,42 @@
         </div>
       </div>`;
 
-    processo.scenarios.forEach((sc, si) => {
+    blocos.forEach((bl, si) => {
       html += `
         <div class="cenario-block">
           <div class="cenario-label">
-            <span>Cenário ${String(si+1).padStart(2,'0')}</span>
+            <span>${bl.tipo==='cenario'?'Cenário':'Questão'} ${String(si+1).padStart(2,'0')}</span>
           </div>
-          <div class="cenario-titulo">${esc(sc.title)}</div>
-          ${sc.questions.map((q, qi) => {
+          <div class="cenario-titulo">${esc(bl.title)}</div>
+          ${bl.perguntas.map((p, qi) => {
+            const tipo = p.tipo || 'dissertativa';
             const resposta = c.answers?.['c' + si + '_q' + qi] || c.answers?.[si]?.[qi] || '';
             const notaSelecionada = scoresAtual[`${si}-${qi}`] || 0;
+            const opcaoCorreta = p.opcoes?.find(o=>o.correta)?.texto || '';
+            const autoCorreta = tipo !== 'dissertativa' && resposta === opcaoCorreta;
+            const autoErrada  = tipo !== 'dissertativa' && resposta && resposta !== opcaoCorreta;
+
             return `
               <div class="perg-avalia">
                 <div class="perg-avalia-top">
                   <div class="perg-num">${qi+1}</div>
-                  <div class="perg-txt">${esc(q.text)}</div>
+                  <div class="perg-txt">${esc(p.texto)}</div>
                 </div>
                 <div class="perg-body">
                   <div class="perg-col">
                     <div class="col-label">Resposta do candidato</div>
                     ${resposta
-                      ? `<div class="resp-txt">${esc(resposta)}</div>`
-                      : `<div class="resp-vazio">Não respondeu esta pergunta.</div>`}
+                      ? `<div class="resp-txt" style="${autoCorreta?'color:var(--green)':autoErrada?'color:var(--red)':''}">${esc(resposta)}${autoCorreta?' ✓':autoErrada?' ✗':''}</div>`
+                      : `<div class="resp-vazio">Não respondeu.</div>`}
+                    ${tipo!=='dissertativa' ? `<div style="font-size:11px;margin-top:6px;color:var(--t2)">Resposta correta: <strong style="color:var(--green)">${esc(opcaoCorreta)}</strong></div>` : ''}
+                    ${p.gabarito ? `<div style="margin-top:10px;padding:10px 12px;background:rgba(246,195,67,0.06);border:1px solid rgba(246,195,67,0.2);border-radius:8px;font-size:12px;color:var(--yellow);line-height:1.6"><span style="font-weight:600;display:block;margin-bottom:4px">📋 Gabarito</span>${esc(p.gabarito)}</div>` : ''}
                   </div>
                   <div class="perg-col">
+                    ${tipo==='dissertativa' ? `
                     <div class="col-label">Critérios de avaliação</div>
                     <div class="notas-grid">
                       ${[1,2,3,4,5].map(n => {
-                        const criterio = q.criteria?.find(cr => cr.score === n);
+                        const criterio = p.criteria?.find(cr => cr.score === n);
                         const selecionado = notaSelecionada === n;
                         return `
                           <div class="nota-row ${selecionado ? 'selected' : ''}" id="nr-${si}-${qi}-${n}"
@@ -365,7 +381,11 @@
                             </div>
                           </div>`;
                       }).join('')}
-                    </div>
+                    </div>` : `
+                    <div class="col-label">Correção automática</div>
+                    <div style="padding:14px;background:${autoCorreta?'rgba(147,245,116,0.08)':autoErrada?'rgba(229,91,91,0.08)':'rgba(255,255,255,0.03)'};border:1px solid ${autoCorreta?'var(--border2)':autoErrada?'rgba(229,91,91,0.3)':'var(--border)'};border-radius:10px;font-size:13px;color:${autoCorreta?'var(--green)':autoErrada?'var(--red)':'var(--t2)'}">
+                      ${!resposta ? '— Não respondido' : autoCorreta ? '✓ Correto' : '✗ Incorreto'}
+                    </div>`}
                   </div>
                 </div>
               </div>`;
