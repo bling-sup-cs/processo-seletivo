@@ -160,6 +160,9 @@
   .nota-input{background:rgba(0,0,0,0.2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--white);font-size:13px;font-family:'Inter',sans-serif;outline:none;width:100%;transition:border-color .2s}
   .nota-input:focus{border-color:var(--green)}
   .nota-input::placeholder{color:var(--t1)}
+  .peso-btn{background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:7px;width:32px;height:28px;font-size:12px;font-weight:600;color:var(--t2);cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
+  .peso-btn:hover{border-color:var(--border2);color:var(--white)}
+  .peso-btn.active{background:rgba(147,245,116,0.12);border-color:var(--border2);color:var(--green)}
   .btn-sugerir{background:rgba(147,245,116,0.07);border:1px solid var(--border2);border-radius:8px;padding:7px 14px;font-size:12px;color:var(--green);font-family:'Inter',sans-serif;cursor:pointer;transition:all .15s;white-space:nowrap;flex-shrink:0}
   .btn-sugerir:hover{background:rgba(147,245,116,0.14)}
 
@@ -375,7 +378,7 @@
               <div style="margin-top:12px">
                 <div style="font-size:12px;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">${isCenario?'Perguntas':'Resposta'}</div>
                 <div id="pergs-${bi}">
-                  ${bl.perguntas.map((p,pi) => renderPergunta(bi,pi,p)).join('')}
+                  ${bl.perguntas.map((p,pi) => isCenario ? renderPergunta(bi,pi,p) : renderRespostaQuestao(bi,pi,p)).join('')}
                 </div>
                 ${isCenario?`<button class="add-perg-btn" onclick="adicionarPergunta(${bi})">+ Adicionar pergunta</button>`:''}
               </div>
@@ -407,6 +410,35 @@
         <div class="gabarito-wrap">
           <div class="gabarito-label">📋 Gabarito / resposta esperada</div>
           <textarea class="gabarito-input" id="gab-${bi}-${pi}" placeholder="Descreva a resposta ideal para esta pergunta…"
+            oninput="dados.blocos[${bi}].perguntas[${pi}].gabarito=this.value" rows="2">${esc(p.gabarito||'')}</textarea>
+        </div>
+      </div>`;
+  }
+
+  // Questão avulsa: só tipo + opções, sem campo de texto da pergunta
+  function renderRespostaQuestao(bi, pi, p) {
+    const tipo = p.tipo || 'dissertativa';
+    return `
+      <div class="perg-item" id="pq-${bi}-${pi}">
+        <div class="perg-tipo-row" style="margin-bottom:10px">
+          <span class="perg-tipo-label">Tipo de resposta:</span>
+          <button class="perg-tipo-btn ${tipo==='dissertativa'?'active':''}" onclick="setTipoPergunta(${bi},${pi},'dissertativa')">✍ Dissertativa</button>
+          <button class="perg-tipo-btn ${tipo==='multipla'?'active':''}" onclick="setTipoPergunta(${bi},${pi},'multipla')">☑ Múltipla escolha</button>
+          <button class="perg-tipo-btn ${tipo==='simnao'?'active':''}" onclick="setTipoPergunta(${bi},${pi},'simnao')">◉ Sim / Não</button>
+        </div>
+        <div id="perg-opcoes-${bi}-${pi}">
+          ${renderOpcoesPergunta(bi, pi, p)}
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:10px;padding-top:10px;border-top:1px dashed var(--border)">
+          <span style="font-size:12px;color:var(--t2)">Peso da questão:</span>
+          <div style="display:flex;gap:6px">
+            ${[1,2,3].map(w => `<button onclick="setPeso(${bi},${pi},${w})" class="peso-btn ${(p.peso||1)===w?'active':''}" id="pw-${bi}-${pi}-${w}">${w}</button>`).join('')}
+          </div>
+          <span style="font-size:11px;color:var(--t1)">Questões com peso maior valem mais na nota final</span>
+        </div>
+        <div class="gabarito-wrap">
+          <div class="gabarito-label">📋 Gabarito / resposta esperada</div>
+          <textarea class="gabarito-input" id="gab-${bi}-${pi}" placeholder="Descreva a resposta ideal…"
             oninput="dados.blocos[${bi}].perguntas[${pi}].gabarito=this.value" rows="2">${esc(p.gabarito||'')}</textarea>
         </div>
       </div>`;
@@ -535,7 +567,9 @@
       bl.title   = document.getElementById(`bl-title-${bi}`)?.value ?? bl.title;
       bl.context = document.getElementById(`bl-ctx-${bi}`)?.value   ?? bl.context;
       bl.perguntas.forEach((p,pi) => {
-        const el = document.getElementById(`pq-${bi}-${pi}`)?.querySelector('textarea');
+        // Para questão avulsa, o texto da pergunta é o próprio título do bloco
+        if (bl.tipo === 'questao') p.texto = bl.title;
+        const el = document.getElementById(`pq-${bi}-${pi}`)?.querySelector('textarea.perg-input');
         if (el) p.texto = el.value;
         const gab = document.getElementById(`gab-${bi}-${pi}`);
         if (gab) p.gabarito = gab.value;
@@ -617,6 +651,14 @@
   }
 
   const CRITERIOS_SUGERIDOS = {1:'Resposta muito superficial ou fora do contexto, sem demonstrar compreensão do problema.',2:'Identifica o problema mas a abordagem é incompleta, confusa ou sem justificativa.',3:'Resposta adequada com raciocínio claro e organizado, atende ao esperado para a vaga.',4:'Resposta completa, bem estruturada, com exemplos práticos e boa comunicação.',5:'Resposta excepcional — demonstra domínio total, visão estratégica e proatividade.'};
+
+  window.setPeso = function(bi, pi, peso) {
+    dados.blocos[bi].perguntas[pi].peso = peso;
+    [1,2,3].forEach(w => {
+      const btn = document.getElementById(`pw-${bi}-${pi}-${w}`);
+      if (btn) { btn.classList.toggle('active', w === peso); }
+    });
+  };
 
   window.sugerirCriterios = function(bi, pi) {
     const btn = document.querySelector(`[onclick="sugerirCriterios(${bi},${pi})"]`);
