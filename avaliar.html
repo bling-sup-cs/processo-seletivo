@@ -415,9 +415,33 @@
   };
 
   function calcularMedia() {
-    const notas = Object.values(scoresAtual);
-    if (notas.length === 0) return 0;
-    return notas.reduce((a, b) => a + b, 0) / notas.length;
+    const blocos = processo.blocos || [];
+    let totalPontos = 0, totalPesos = 0;
+
+    blocos.forEach((bl, si) => {
+      bl.perguntas.forEach((p, qi) => {
+        const peso = p.peso || 1;
+        const tipo = p.tipo || 'dissertativa';
+        let nota = null;
+
+        if (tipo === 'dissertativa') {
+          nota = scoresAtual[`${si}-${qi}`] || null;
+        } else {
+          // Auto-corrige: acertou = 5, errou = 0
+          const resposta = candidatoAtual?.answers?.['c' + si + '_q' + qi] || '';
+          const correta = p.opcoes?.find(o => o.correta)?.texto || '';
+          if (resposta) nota = resposta === correta ? 5 : 0;
+        }
+
+        if (nota !== null) {
+          totalPontos += nota * peso;
+          totalPesos += 5 * peso; // máximo possível
+        }
+      });
+    });
+
+    if (totalPesos === 0) return 0;
+    return (totalPontos / totalPesos) * 5; // retorna em escala 0-5
   }
 
   // ── SALVAR ──
@@ -425,9 +449,22 @@
     if (!candidatoAtual) return;
     setSaveStatus('saving');
 
-    const scores = Object.entries(scoresAtual).map(([key, score]) => {
-      const [si, qi] = key.split('-').map(Number);
-      return { si, qi, score };
+    const blocos = processo.blocos || [];
+    // Mescla notas manuais com notas automáticas
+    const scores = [];
+    blocos.forEach((bl, si) => {
+      bl.perguntas.forEach((p, qi) => {
+        const tipo = p.tipo || 'dissertativa';
+        const peso = p.peso || 1;
+        if (tipo === 'dissertativa') {
+          const nota = scoresAtual[`${si}-${qi}`];
+          if (nota) scores.push({ si, qi, score: nota, peso });
+        } else {
+          const resposta = candidatoAtual?.answers?.['c' + si + '_q' + qi] || '';
+          const correta = p.opcoes?.find(o => o.correta)?.texto || '';
+          if (resposta) scores.push({ si, qi, score: resposta === correta ? 5 : 0, peso, auto: true });
+        }
+      });
     });
     const total = calcularMedia();
 
