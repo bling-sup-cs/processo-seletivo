@@ -228,7 +228,7 @@
         const sub = { id: d.id, ...d.data() };
         const aval = avaliacoes[d.id] || null;
         // Calcula total em 100 pontos
-        const totalPontos = aval ? calcularTotal100(aval.scores, processo.scenarios) : null;
+        const totalPontos = aval ? calcularTotal100(aval.scores, processo.blocos || processo.scenarios?.map(sc=>({perguntas:(sc.questions||[]).map(q=>({peso:1}))}))) : null;
         dados.push({ ...sub, avaliacao: aval, total100: totalPontos });
       });
 
@@ -251,13 +251,23 @@
     }
   }
 
-  function calcularTotal100(scores, scenarios) {
+  function calcularTotal100(scores, blocos) {
     if (!scores || scores.length === 0) return null;
-    // Total máximo = nº de perguntas × 5
-    const totalPergs = scenarios.reduce((acc, sc) => acc + sc.questions.length, 0);
-    const maxPontos = totalPergs * 5;
-    const obtido = scores.reduce((acc, s) => acc + s.score, 0);
-    return Math.round((obtido / maxPontos) * 100);
+    // Considera peso: máximo = soma(5 × peso) de todas as perguntas com score
+    let obtido = 0, maximo = 0;
+    const bl = blocos || [];
+    bl.forEach((b, si) => {
+      (b.perguntas || []).forEach((p, qi) => {
+        const peso = p.peso || 1;
+        const s = scores.find(sc => sc.si === si && sc.qi === qi);
+        if (s != null) {
+          obtido += s.score * peso;
+          maximo += 5 * peso;
+        }
+      });
+    });
+    if (maximo === 0) return null;
+    return Math.round((obtido / maximo) * 100);
   }
 
   function atualizarStats() {
