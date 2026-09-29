@@ -125,6 +125,18 @@
   .add-perg-btn{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--green);background:transparent;border:1px dashed var(--border2);border-radius:10px;padding:10px 14px;cursor:pointer;width:100%;margin-top:10px;font-family:'Inter',sans-serif;transition:all .15s}
   .add-perg-btn:hover{background:rgba(147,245,116,0.04)}
 
+  /* TIPOS EXPLICACAO */
+  .tipos-explicacao{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+  .tipo-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .tipo-card-icon{font-size:28px;flex-shrink:0}
+  .tipo-card-info{flex:1;min-width:200px}
+  .tipo-card-titulo{font-size:14px;font-weight:600;color:var(--white);margin-bottom:4px}
+  .tipo-card-desc{font-size:13px;color:var(--t2);line-height:1.6}
+  .add-bloco-btn-inline{background:var(--green);color:var(--dark);border:none;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;transition:opacity .2s;white-space:nowrap;flex-shrink:0}
+  .add-bloco-btn-inline:hover{opacity:.88}
+  .add-bloco-btn-inline.questao{background:transparent;color:var(--mist);border:1px solid var(--border)}
+  .add-bloco-btn-inline.questao:hover{border-color:var(--t2);color:var(--white)}
+
   /* ADD BLOCO */
   .add-bloco-row{display:flex;gap:10px;margin-top:4px}
   .add-bloco-btn{display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px;color:var(--green);background:transparent;border:1px dashed var(--border2);border-radius:14px;padding:14px;cursor:pointer;flex:1;font-family:'Inter',sans-serif;transition:all .15s}
@@ -281,20 +293,47 @@
 
   // ── ETAPA 2 ──
   function renderEtapa2() {
-    if (dados.blocos.length === 0) dados.blocos.push(novoCenario());
     const c = document.getElementById('content');
     c.innerHTML = `
       <h2 class="sec-title">Cenários e questões</h2>
-      <p class="sec-sub">Adicione <strong>cenários</strong> (com contexto e perguntas) ou <strong>questões avulsas</strong> (uma pergunta direta). Cada pergunta pode ser dissertativa, múltipla escolha ou sim/não.</p>
+      <p class="sec-sub">Monte seu processo combinando <strong>cenários</strong> e <strong>questões</strong> como quiser.</p>
+
+      <div class="tipos-explicacao">
+        <div class="tipo-card">
+          <div class="tipo-card-icon">📋</div>
+          <div class="tipo-card-info">
+            <div class="tipo-card-titulo">Cenário</div>
+            <div class="tipo-card-desc">Apresenta um contexto ou situação, seguido de uma ou mais perguntas sobre ele. Ideal para avaliar como o candidato raciocina diante de casos reais.</div>
+          </div>
+          <button class="add-bloco-btn-inline" onclick="adicionarBloco('cenario')">+ Adicionar cenário</button>
+        </div>
+        <div class="tipo-card">
+          <div class="tipo-card-icon">❓</div>
+          <div class="tipo-card-info">
+            <div class="tipo-card-titulo">Questão avulsa</div>
+            <div class="tipo-card-desc">Uma pergunta direta, sem contexto adicional. Útil para verificar conhecimentos técnicos pontuais, como ferramentas, conceitos ou experiências.</div>
+          </div>
+          <button class="add-bloco-btn-inline questao" onclick="adicionarBloco('questao')">+ Adicionar questão</button>
+        </div>
+      </div>
+
       <div id="blocos-lista"></div>
-      <div class="add-bloco-row">
-        <button class="add-bloco-btn" onclick="adicionarBloco('cenario')">+ Cenário</button>
-        <button class="add-bloco-btn questao" onclick="adicionarBloco('questao')">+ Questão avulsa</button>
+      <div id="add-bloco-bottom" style="display:none">
+        <div class="add-bloco-row">
+          <button class="add-bloco-btn" onclick="adicionarBloco('cenario')">+ Cenário</button>
+          <button class="add-bloco-btn questao" onclick="adicionarBloco('questao')">+ Questão avulsa</button>
+        </div>
       </div>`;
     renderBlocos();
     document.getElementById('btn-anterior').style.display='inline-flex';
     document.getElementById('btn-proximo').textContent='Próximo →';
+    atualizarFooterEtapa2();
+  }
+
+  function atualizarFooterEtapa2() {
     document.getElementById('footer-info').innerHTML=`Etapa <strong>2 de 3</strong> — <strong>${dados.blocos.length}</strong> bloco(s)`;
+    const bottom = document.getElementById('add-bloco-bottom');
+    if (bottom) bottom.style.display = dados.blocos.length > 0 ? 'block' : 'none';
   }
 
   function renderBlocos() {
@@ -310,7 +349,7 @@
               <span class="bloco-titulo-preview" id="bprev-${bi}">${esc(bl.title)||'Sem título'}</span>
             </div>
             <div class="bloco-header-right">
-              <button class="btn-ico danger" onclick="event.stopPropagation();removerBloco(${bi})">🗑</button>
+              <button class="btn-ico danger" onclick="event.stopPropagation();removerBloco(${bi})" title="Remover">🗑️</button>
               <span class="chevron open" id="bchev-${bi}">▾</span>
             </div>
           </div>
@@ -460,7 +499,7 @@
     coletarBlocos();
     dados.blocos.push(tipo==='cenario' ? novoCenario() : novaQuestao());
     renderBlocos();
-    document.getElementById('footer-info').innerHTML=`Etapa <strong>2 de 3</strong> — <strong>${dados.blocos.length}</strong> bloco(s)`;
+    atualizarFooterEtapa2();
   };
 
   window.removerBloco = function(bi) {
