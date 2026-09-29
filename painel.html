@@ -67,6 +67,8 @@
   .btn-icon:hover{border-color:var(--border2);color:var(--white)}
   .btn-icon.primary{background:rgba(147,245,116,0.08);border-color:var(--border2);color:var(--green)}
   .btn-icon.primary:hover{background:rgba(147,245,116,0.15)}
+  .btn-icon.danger{border-color:rgba(229,91,91,0.25);color:var(--red)}
+  .btn-icon.danger:hover{background:rgba(229,91,91,0.08);border-color:rgba(229,91,91,0.4)}
 
   /* ── EMPTY ── */
   .empty{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:56px 24px;text-align:center}
@@ -234,7 +236,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, collection, query, where, getDocs, addDoc, updateDoc, doc, serverTimestamp, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, collection, query, where, getDocs, addDoc, updateDoc, deleteDoc, doc, serverTimestamp, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCxWXwMe3rE1zMSiIxmz5E34cc2BmyeGsw",
@@ -338,6 +340,9 @@
               ? `<button class="btn-icon" onclick="verLinks('${p.id}')">🔗 Links</button>
                  <button class="btn-icon primary" onclick="avaliar('${p.id}')">📊 Avaliar</button>`
               : `<button class="btn-icon primary" onclick="publicar('${p.id}')">🚀 Publicar</button>`}
+            <button class="btn-icon danger" onclick="excluirProcesso('${p.id}','${p.title}')">
+              <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M1.75 3.5h10.5M5.25 3.5V2.333a.583.583 0 0 1 .583-.583h2.334a.583.583 0 0 1 .583.583V3.5M11.083 3.5l-.583 7.583a.583.583 0 0 1-.583.584H4.083a.583.583 0 0 1-.583-.584L2.917 3.5" stroke="#E55B5B" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.833 6.417v2.916M8.167 6.417v2.916" stroke="#E55B5B" stroke-width="1.2" stroke-linecap="round"/></svg>
+            </button>
           </div>
         </div>`;
     }).join('')}</div>`;
@@ -417,6 +422,20 @@
       btn.disabled = false;
       btn.textContent = 'Criar e configurar →';
     }
+  };
+
+  // ── EXCLUIR PROCESSO ──
+  window.excluirProcesso = async function(id, titulo) {
+    if (!confirm(`Excluir o processo "${titulo}"?\n\nEsta ação é permanente e também remove todas as respostas e avaliações dos candidatos.`)) return;
+    try {
+      // Exclui subcoleções de submissions e evaluations
+      const subSnap = await getDocs(collection(db, 'processes', id, 'submissions'));
+      for (const d of subSnap.docs) await deleteDoc(doc(db, 'processes', id, 'submissions', d.id));
+      const evalSnap = await getDocs(collection(db, 'processes', id, 'evaluations'));
+      for (const d of evalSnap.docs) await deleteDoc(doc(db, 'processes', id, 'evaluations', d.id));
+      await deleteDoc(doc(db, 'processes', id));
+      await carregarProcessos();
+    } catch(e) { alert('Erro ao excluir: ' + e.message); }
   };
 
   // ── SAIR ──
