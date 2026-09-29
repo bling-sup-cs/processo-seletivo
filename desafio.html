@@ -281,7 +281,14 @@
         return;
       }
       processo = { id: snap.id, ...snap.data() };
-      ans = processo.scenarios.map(s => s.questions.map(() => ''));
+      // Normaliza para formato de blocos
+      if (!processo.blocos && processo.scenarios) {
+        processo.blocos = processo.scenarios.map(sc=>({
+          tipo:'cenario', title:sc.title, context:sc.context,
+          perguntas:(sc.questions||[]).map(q=>({texto:q.text,tipo:'dissertativa',opcoes:[],gabarito:'',criteria:q.criteria||[]}))
+        }));
+      }
+      ans = processo.blocos.map(b => b.perguntas.map(() => ''));
 
       // Verificar sessão salva
       const session = carregarSessao();
@@ -289,7 +296,7 @@
         uName = session.name;
         uEmail = session.email;
         startedAt = session.startedAt;
-        ans = session.answers || ans;
+        ans = session.answers || processo.blocos.map(b => b.perguntas.map(() => ''));
         cur = session.cur || 0;
         renderWelcome();
         show('s-challenge');
@@ -358,41 +365,69 @@
     renderCenario(0);
   };
 
-  // ── RENDER CENÁRIO ──
+  // ── RENDER BLOCO ──
   function renderCenario(i) {
     cur = i;
     salvarSessao();
-    const sc = processo.scenarios[i];
-    const total = processo.scenarios.length;
+    const blocos = processo.blocos || processo.scenarios.map(sc=>({tipo:'cenario',title:sc.title,context:sc.context,perguntas:sc.questions.map(q=>({texto:q.text,tipo:'dissertativa',opcoes:[],gabarito:''}))}));
+    const bl = blocos[i];
+    const total = blocos.length;
 
     // Sidebar
     const sbar = document.getElementById('sbar');
-    sbar.innerHTML = `<p class="sbar-ttl">Cenários</p>` +
-      processo.scenarios.map((s, idx) => `
+    sbar.innerHTML = '<p class="sbar-ttl">Blocos</p>' +
+      blocos.map((b, idx) => `
         <button class="sbtn ${idx === i ? 'active' : ''}" id="nb-${idx}" onclick="irPara(${idx})">
-          <div class="sn">Cenário ${String(idx+1).padStart(2,'0')}</div>
-          <div class="st">${esc(s.title)}</div>
-          <div class="sc" id="ck-${idx}">${ans[idx]?.some(v => v.trim()) ? '✓ Respondido' : ''}</div>
+          <div class="sn">${b.tipo==='cenario'?'Cenário':'Questão'} ${String(idx+1).padStart(2,'0')}</div>
+          <div class="st">${esc(b.title)}</div>
+          <div class="sc" id="ck-${idx}">${ans[idx]?.some(v => v && v.trim()) ? '✓ Respondido' : ''}</div>
         </button>`).join('');
 
     // Conteúdo
     const scroll = document.getElementById('main-scroll');
-    scroll.innerHTML = `
-      <p class="sc-tag">Cenário ${String(i+1).padStart(2,'0')} de ${total}</p>
-      <h2 class="sc-title">${esc(sc.title)}</h2>
-      <div class="ctx">
-        <p class="ctx-lbl">Situação</p>
-        <p class="ctx-txt">${esc(sc.context).replace(/\n/g,'<br>')}</p>
-      </div>
-      <div class="qs">
-        ${sc.questions.map((q, qi) => `
-          <div>
-            <p class="qlbl"><span class="qn">${qi+1}.</span><span>${esc(q.text)}</span></p>
-            <textarea class="ans" id="a${i}-${qi}" placeholder="Escreva sua resposta aqui…"
-              oninput="salvarResposta(${i},${qi},this.value)">${esc(ans[i]?.[qi] || '')}</textarea>
-          </div>`).join('')}
-      </div>`;
+    let html = `
+      <p class="sc-tag">${bl.tipo==='cenario'?'Cenário':'Questão'} ${String(i+1).padStart(2,'0')} de ${total}</p>
+      <h2 class="sc-title">${esc(bl.title)}</h2>`;
 
+    if (bl.tipo==='cenario' && bl.context) {
+      html += `<div class="ctx"><p class="ctx-lbl">Situação</p><p class="ctx-txt">${esc(bl.context).replace(/\n/g,'<br>')}</p></div>`;
+    }
+
+    html += '<div class="qs">';
+    bl.perguntas.forEach((p, qi) => {
+      const tipo = p.tipo || 'dissertativa';
+      const respAtual = ans[i]?.[qi] || '';
+      html += `<div><p class="qlbl"><span class="qn">${qi+1}.</span><span>${esc(p.texto)}</span></p>`;
+
+      if (tipo === 'dissertativa') {
+        html += `<textarea class="ans" id="a${i}-${qi}" placeholder="Escreva sua resposta aqui…"
+          oninput="salvarResposta(${i},${qi},this.value)">${esc(respAtual)}</textarea>`;
+      } else if (tipo === 'simnao') {
+        const opcoes = p.opcoes && p.opcoes.length ? p.opcoes : [{texto:'Sim'},{texto:'Não'}];
+        html += `<div style="display:flex;gap:10px;margin-top:8px">
+          ${opcoes.map((o,oi) => `
+            <button onclick="selecionarOpcao(${i},${qi},${oi},'${esc(o.texto)}')"
+              id="opt-${i}-${qi}-${oi}"
+              style="flex:1;padding:12px;border-radius:10px;font-size:14px;font-weight:500;font-family:'Inter',sans-serif;cursor:pointer;transition:all .2s;border:1px solid;${respAtual===o.texto?'background:rgba(147,245,116,0.15);border-color:var(--green);color:var(--green)':'background:var(--card);border-color:var(--border);color:var(--mist)'}">
+              ${esc(o.texto)}
+            </button>`).join('')}
+        </div>`;
+      } else if (tipo === 'multipla') {
+        const opcoes = p.opcoes || [];
+        html += `<div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+          ${opcoes.map((o,oi) => `
+            <button onclick="selecionarOpcao(${i},${qi},${oi},'${esc(o.texto)}')"
+              id="opt-${i}-${qi}-${oi}"
+              style="width:100%;text-align:left;padding:12px 16px;border-radius:10px;font-size:13px;font-family:'Inter',sans-serif;cursor:pointer;transition:all .2s;border:1px solid;${respAtual===o.texto?'background:rgba(147,245,116,0.15);border-color:var(--green);color:var(--white)':'background:var(--card);border-color:var(--border);color:var(--mist)'}">
+              ${esc(o.texto)}
+            </button>`).join('')}
+        </div>`;
+      }
+      html += '</div>';
+    });
+    html += '</div>';
+
+    scroll.innerHTML = html;
     scroll.scrollTo(0, 0);
 
     // Nav buttons
@@ -403,6 +438,28 @@
         ? `<button class="btn-p" onclick="irPara(${i+1})">Próximo →</button>`
         : `<button class="btn-p" onclick="document.getElementById('modal-confirm').style.display='flex'">Finalizar desafio</button>`);
   }
+
+  window.selecionarOpcao = function(si, qi, oi, texto) {
+    if (!ans[si]) ans[si] = [];
+    ans[si][qi] = texto;
+    salvarSessao();
+    // Atualiza visual de todos os botões daquela pergunta
+    const blocos = processo.blocos || [];
+    const bl = blocos[si];
+    if (!bl) return;
+    const opcoes = bl.perguntas[qi].opcoes || [];
+    opcoes.forEach((_,idx) => {
+      const btn = document.getElementById('opt-'+si+'-'+qi+'-'+idx);
+      if (!btn) return;
+      const sel = idx === oi;
+      btn.style.background = sel ? 'rgba(147,245,116,0.15)' : 'var(--card)';
+      btn.style.borderColor = sel ? 'var(--green)' : 'var(--border)';
+      btn.style.color = sel ? (bl.perguntas[qi].tipo==='simnao'?'var(--green)':'var(--white)') : 'var(--mist)';
+    });
+    // Atualiza check na sidebar
+    const ck = document.getElementById('ck-'+si);
+    if (ck) ck.textContent = '✓ Respondido';
+  };
 
   window.irPara = function(i) {
     atualizarCk(cur);
@@ -468,9 +525,10 @@
       <div class="sr"><span>Candidato</span><span>${esc(uName)}</span></div>
       <div class="sr"><span>E-mail</span><span>${esc(uEmail)}</span></div>
       <div class="sr"><span>Tempo utilizado</span><span>${timeStr}</span></div>`;
-    processo.scenarios.forEach((s, i) => {
-      const resp = ans[i]?.some(v => v.trim());
-      h += `<div class="sr"><span>Cenário ${i+1} — ${esc(s.title)}</span><span style="color:${resp?'var(--green)':'var(--t2)'}">${resp?'✓ Respondido':'— Não respondido'}</span></div>`;
+    (processo.blocos||[]).forEach((bl, i) => {
+      const resp = ans[i]?.some(v => v && v.trim());
+      const label = (bl.tipo==='cenario'?'Cenário':'Questão')+' '+(i+1)+' — '+bl.title;
+      h += '<div class="sr"><span>'+esc(label)+'</span><span style="color:'+(resp?'var(--green)':'var(--t2)')+'">'+(resp?'✓ Respondido':'— Não respondido')+'</span></div>';
     });
     document.getElementById('sum').innerHTML = h;
     show('s-finish');
@@ -524,19 +582,14 @@
         <p><strong>Enviado em:</strong> ${dataEnvio}</p>
       </div>`;
 
-    processo.scenarios.forEach((sc, si) => {
-      html += `<div class="pa-cenario">
-        <div class="pa-cenario-tag">Cenário ${String(si+1).padStart(2,'0')}</div>
-        <div class="pa-cenario-titulo">${esc(sc.title)}</div>
-        <div class="pa-ctx">${esc(sc.context).replace(/\n/g,'<br>')}</div>`;
-      sc.questions.forEach((q, qi) => {
+    (processo.blocos||[]).forEach((bl, si) => {
+      html += '<div class="pa-cenario"><div class="pa-cenario-tag">'+(bl.tipo==='cenario'?'Cenário':'Questão')+' '+String(si+1).padStart(2,'0')+'</div><div class="pa-cenario-titulo">'+esc(bl.title)+'</div>';
+      if (bl.context) html += '<div class="pa-ctx">'+esc(bl.context).replace(/\n/g,'<br>')+'</div>';
+      bl.perguntas.forEach((p, qi) => {
         const resposta = ans[si]?.[qi] || '';
-        html += `<div class="pa-perg">
-          <div class="pa-perg-txt">${qi+1}. ${esc(q.text)}</div>
-          <div class="pa-resp ${resposta ? '' : 'vazio'}">${resposta ? esc(resposta) : 'Não respondido'}</div>
-        </div>`;
+        html += '<div class="pa-perg"><div class="pa-perg-txt">'+(qi+1)+'. '+esc(p.texto)+'</div><div class="pa-resp '+(resposta?'':'vazio')+'">'+(resposta?esc(resposta):'Não respondido')+'</div></div>';
       });
-      html += `</div>`;
+      html += '</div>';
     });
 
     html += `<div class="pa-footer">Bling Seletivo · Documento gerado automaticamente · ${dataEnvio}</div>`;
