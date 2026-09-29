@@ -170,7 +170,7 @@
   .footer-info{font-size:12px;color:var(--t2)}
   .footer-info strong{color:var(--green)}
   .footer-btns{display:flex;gap:10px}
-  .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--border2);border-radius:12px;padding:12px 20px;font-size:13px;color:var(--green);display:none;z-index:999;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
+  .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#011918;border:1px solid var(--border2);border-radius:12px;padding:12px 24px;font-size:13px;color:var(--green);display:none;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,0.6);pointer-events:none;white-space:nowrap}
 
   @media(max-width:640px){
     .hdr,.steps-bar,.footer-bar{padding-left:20px;padding-right:20px}
@@ -349,7 +349,12 @@
               <span class="bloco-titulo-preview" id="bprev-${bi}">${esc(bl.title)||'Sem título'}</span>
             </div>
             <div class="bloco-header-right">
-              <button class="btn-ico danger" onclick="event.stopPropagation();removerBloco(${bi})" title="Remover">🗑️</button>
+              <button class="btn-ico danger" onclick="event.stopPropagation();removerBloco(${bi})" title="Remover bloco" style="border-color:rgba(229,91,91,0.3);color:var(--red);padding:5px 9px">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1.75 3.5h10.5M5.25 3.5V2.333a.583.583 0 0 1 .583-.583h2.334a.583.583 0 0 1 .583.583V3.5M11.083 3.5l-.583 7.583a.583.583 0 0 1-.583.584H4.083a.583.583 0 0 1-.583-.584L2.917 3.5" stroke="#E55B5B" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M5.833 6.417v2.916M8.167 6.417v2.916" stroke="#E55B5B" stroke-width="1.2" stroke-linecap="round"/>
+                </svg>
+              </button>
               <span class="chevron open" id="bchev-${bi}">▾</span>
             </div>
           </div>
