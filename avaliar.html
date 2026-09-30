@@ -263,7 +263,7 @@
       return;
     }
     el.innerHTML = lista.map(c => {
-      const avaliado = !!avaliacoes[c.id];
+      const avaliado = !!(avaliacoes[c.id]?.avaliado || avaliacoes[c.id]?.scores?.length);
       const ativo = candidatoAtual?.id === c.id;
       return `
         <button class="cand-btn ${ativo ? 'active' : ''}" id="cb-${c.id}" onclick="selecionarCandidato('${c.id}')">
@@ -346,7 +346,7 @@
           ${bl.perguntas.map((p, qi) => {
             const tipo = p.tipo || 'dissertativa';
             const resposta = c.answers?.['c' + si + '_q' + qi] || c.answers?.[si]?.[qi] || '';
-            const notaSelecionada = scoresAtual[`${si}-${qi}`] || 0;
+            const notaSelecionada = scoresAtual[String(si)+'-'+String(qi)];
             const opcaoCorreta = p.opcoes?.find(o=>o.correta)?.texto || '';
             const autoCorreta = tipo !== 'dissertativa' && resposta === opcaoCorreta;
             const autoErrada  = tipo !== 'dissertativa' && resposta && resposta !== opcaoCorreta;
@@ -411,11 +411,11 @@
   }
 
   window.selecionarNota = function(si, qi, nota) {
-    scoresAtual[`${si}-${qi}`] = nota;
+    scoresAtual[String(si)+'-'+String(qi)] = nota;
 
     // Atualiza visual
-    [1,2,3,4,5].forEach(n => {
-      const el = document.getElementById(`nr-${si}-${qi}-${n}`);
+    [0,1,2,3,4,5].forEach(n => {
+      const el = document.getElementById('nr-'+si+'-'+qi+'-'+n);
       if (el) el.classList.toggle('selected', n === nota);
     });
 
@@ -442,7 +442,7 @@
 
         if (tipo === 'dissertativa') {
           const score = scoresAtual[`${si}-${qi}`];
-          if (score !== undefined && score !== null) nota = (score / 5) * pts;
+          if (score !== undefined && score !== null && score !== '') nota = (score / 5) * pts;
         } else if (p.autoCorrigir !== false) {
           const resposta = candidatoAtual?.answers?.['c' + si + '_q' + qi] || '';
           const correta = p.opcoes?.find(o => o.correta)?.texto || '';
@@ -450,7 +450,7 @@
         } else {
           // Avaliação manual — usa score do coordenador
           const score = scoresAtual[`${si}-${qi}`];
-          if (score !== undefined && score !== null) nota = (score / 5) * pts;
+          if (score !== undefined && score !== null && score !== '') nota = (score / 5) * pts;
         }
 
         if (nota !== null) { obtido += nota; maximo += pts; }
@@ -496,7 +496,7 @@
         { evaluatorUid: auth.currentUser?.uid, scores, total, totalMax, updatedAt: serverTimestamp() },
         { merge: true }
       );
-      avaliacoes[candidatoAtual.id] = { scores, total, totalMax };
+      avaliacoes[candidatoAtual.id] = { scores, total, totalMax, avaliado: true };
       atualizarStats();
       renderSidebar(candidatos);
       // Reativa botão do candidato atual
