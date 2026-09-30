@@ -348,6 +348,20 @@
             const resposta = c.answers?.['c' + si + '_q' + qi] || c.answers?.[si]?.[qi] || '';
             const notaSelecionada = scoresAtual[String(si)+'-'+String(qi)];
             const opcaoCorreta = p.opcoes?.find(o=>o.correta)?.texto || '';
+            if (tipo === 'informativo') {
+              // Pergunta informativa — só leitura, sem nota
+              return `
+                <div class="perg-avalia">
+                  <div class="perg-avalia-top">
+                    <div class="perg-num">${qi+1}</div>
+                    <div class="perg-txt">${esc(p.texto)} <span style="font-size:11px;color:var(--t2);font-weight:400">· Informativo</span></div>
+                  </div>
+                  <div style="padding:16px 20px">
+                    <div class="col-label" style="margin-bottom:8px">Resposta do candidato</div>
+                    ${resposta ? `<div class="resp-txt">${esc(resposta)}</div>` : `<div class="resp-vazio">Não respondeu.</div>`}
+                  </div>
+                </div>`;
+            }
             const autoCorreta = tipo !== 'dissertativa' && resposta === opcaoCorreta;
             const autoErrada  = tipo !== 'dissertativa' && resposta && resposta !== opcaoCorreta;
 
@@ -435,6 +449,7 @@
 
     blocos.forEach((bl, si) => {
       bl.perguntas.forEach((p, qi) => {
+        if ((p.tipo||'dissertativa') === 'informativo') return; // informativos não pontuam
         const pts = parseFloat(p.peso) || 0;
         if (pts === 0) return;
         const tipo = p.tipo || 'dissertativa';
