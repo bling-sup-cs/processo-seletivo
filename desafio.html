@@ -411,7 +411,8 @@
               style="flex:1;padding:12px;border-radius:10px;font-size:14px;font-weight:500;font-family:'Inter',sans-serif;cursor:pointer;transition:all .2s;border:1px solid;${respAtual===o.texto?'background:rgba(147,245,116,0.15);border-color:var(--green);color:var(--green)':'background:var(--card);border-color:var(--border);color:var(--mist)'}">
               ${esc(o.texto)}
             </button>`).join('')}
-        </div>`;
+        </div>
+        ${p.justificativa ? `<div style="margin-top:10px"><p style="font-size:12px;color:var(--t2);margin-bottom:6px">Justifique sua resposta:</p><textarea class="ans" id="just-${i}-${qi}" placeholder="Explique o motivo da sua escolha…" oninput="salvarJustificativa(${i},${qi},this.value)" style="height:70px">${esc(ans[i]?.['j'+qi]||'')}</textarea></div>` : ''}`;
       } else if (tipo === 'multipla') {
         const opcoes = p.opcoes || [];
         html += `<div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
@@ -421,7 +422,8 @@
               style="width:100%;text-align:left;padding:12px 16px;border-radius:10px;font-size:13px;font-family:'Inter',sans-serif;cursor:pointer;transition:all .2s;border:1px solid;${respAtual===o.texto?'background:rgba(147,245,116,0.15);border-color:var(--green);color:var(--white)':'background:var(--card);border-color:var(--border);color:var(--mist)'}">
               ${esc(o.texto)}
             </button>`).join('')}
-        </div>`;
+        </div>
+        ${p.justificativa ? `<div style="margin-top:10px"><p style="font-size:12px;color:var(--t2);margin-bottom:6px">Justifique sua resposta:</p><textarea class="ans" id="just-${i}-${qi}" placeholder="Explique o motivo da sua escolha…" oninput="salvarJustificativa(${i},${qi},this.value)" style="height:70px">${esc(ans[i]?.['j'+qi]||'')}</textarea></div>` : ''}`;
       }
       html += '</div>';
     });
@@ -438,6 +440,13 @@
         ? `<button class="btn-p" onclick="irPara(${i+1})">Próximo →</button>`
         : `<button class="btn-p" onclick="document.getElementById('modal-confirm').style.display='flex'">Finalizar desafio</button>`);
   }
+
+  window.salvarJustificativa = function(si, qi, val) {
+    if (!ans[si]) ans[si] = [];
+    ans[si]['j'+qi] = val;
+    clearTimeout(window._saveT);
+    window._saveT = setTimeout(salvarSessao, 500);
+  };
 
   window.selecionarOpcao = function(si, qi, oi, texto) {
     if (!ans[si]) ans[si] = [];
@@ -503,13 +512,23 @@
     });
 
     try {
+      // Coletar justificativas
+      const justFlat = {};
+      ans.forEach((bl, si) => {
+        if (!bl) return;
+        Object.keys(bl).forEach(k => {
+          if (k.startsWith('j')) justFlat['c' + si + '_' + k] = bl[k];
+        });
+      });
+
       await addDoc(collection(db, 'processes', processId, 'submissions'), {
         name: uName,
         email: uEmail.toLowerCase(),
         submittedAt: serverTimestamp(),
         timeUsed: used,
         answers: answersFlat,
-        answersShape: ans.map(c => c.length),
+        justificativas: justFlat,
+        answersShape: ans.map(c => Array.isArray(c) ? c.length : 0),
         processTitle: processo.title,
       });
       limparSessao();
