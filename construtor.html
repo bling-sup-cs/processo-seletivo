@@ -389,6 +389,7 @@
                 <button class="perg-tipo-btn ${(bl.perguntas[0]?.tipo||'dissertativa')==='dissertativa'?'active':''}" onclick="setTipoPergEtapa2(${bi},0,'dissertativa')">✍ Dissertativa</button>
                 <button class="perg-tipo-btn ${(bl.perguntas[0]?.tipo||'dissertativa')==='multipla'?'active':''}" onclick="setTipoPergEtapa2(${bi},0,'multipla')">☑ Múltipla escolha</button>
                 <button class="perg-tipo-btn ${(bl.perguntas[0]?.tipo||'dissertativa')==='simnao'?'active':''}" onclick="setTipoPergEtapa2(${bi},0,'simnao')">◉ Sim / Não</button>
+                <button class="perg-tipo-btn ${(bl.perguntas[0]?.tipo||'dissertativa')==='informativo'?'active':''}" onclick="setTipoPergEtapa2(${bi},0,'informativo')">ℹ Informativo</button>
               </div>
               <div id="e2-opcoes-${bi}-0" style="margin-top:10px">
                 ${renderE2Opcoes(bi,0,bl.perguntas[0])}
@@ -419,11 +420,12 @@
                         <button class="perg-tipo-btn ${tipo==='dissertativa'?'active':''}" onclick="setTipoPergEtapa2(${bi},${pi},'dissertativa')">✍ Dissertativa</button>
                         <button class="perg-tipo-btn ${tipo==='multipla'?'active':''}" onclick="setTipoPergEtapa2(${bi},${pi},'multipla')">☑ Múltipla escolha</button>
                         <button class="perg-tipo-btn ${tipo==='simnao'?'active':''}" onclick="setTipoPergEtapa2(${bi},${pi},'simnao')">◉ Sim / Não</button>
+                        <button class="perg-tipo-btn ${tipo==='informativo'?'active':''}" style="${tipo==='informativo'?'':''}color:${tipo==='informativo'?'var(--green)':'var(--t2)'}" onclick="setTipoPergEtapa2(${bi},${pi},'informativo')">ℹ Informativo</button>
                       </div>
                       <div id="e2-opcoes-${bi}-${pi}" style="padding-left:34px">
                         ${renderE2Opcoes(bi,pi,p)}
                       </div>
-                      ${tipo!=='dissertativa'?renderTogglesSel(bi,pi,p):''}
+                      ${(tipo!=='dissertativa'&&tipo!=='informativo')?renderTogglesSel(bi,pi,p):''}
                     </div>`}).join('')}
                 </div>
                 <button class="add-perg-btn" onclick="adicionarPergunta(${bi})">+ Adicionar pergunta</button>
@@ -439,6 +441,7 @@
   function renderE2Opcoes(bi, pi, p) {
     const tipo = p.tipo || 'dissertativa';
     if (tipo === 'dissertativa') return '';
+    if (tipo === 'informativo') return '<div style="margin-top:8px;font-size:12px;color:var(--t2);padding:8px 12px;background:rgba(103,138,136,0.08);border:1px solid var(--border);border-radius:8px">ℹ Esta pergunta é apenas informativa — não entra na pontuação e não precisa de avaliação.</div>';
     if (tipo === 'simnao') {
       const correta = p.opcoes?.[0]?.correta ? 'sim' : p.opcoes?.[1]?.correta ? 'nao' : '';
       return `<div style="margin-top:8px">
@@ -558,7 +561,7 @@
     p.tipo = tipo;
     if (tipo==='multipla' && (!p.opcoes||p.opcoes.length===0)) p.opcoes=[{texto:'',correta:true},{texto:'',correta:false}];
     if (tipo==='simnao') p.opcoes=[{texto:'Sim',correta:false},{texto:'Não',correta:false}];
-    if (tipo==='dissertativa') p.opcoes=[];
+    if (tipo==='dissertativa' || tipo==='informativo') p.opcoes=[];
     // Atualiza botões ativos
     ['dissertativa','multipla','simnao'].forEach(t => {
       const btn = document.querySelector(`[onclick="setTipoPergEtapa2(${bi},${pi},'${t}')"]`);
@@ -667,6 +670,9 @@
 
   function renderAvalOpcoes(bi, pi, p) {
     const tipo = p.tipo || 'dissertativa';
+    if (tipo === 'informativo') {
+      return '<div style="padding:14px 16px;background:rgba(103,138,136,0.08);border:1px solid var(--border);border-radius:10px;font-size:13px;color:var(--t2)">ℹ Pergunta informativa — apenas para coleta de dados. Não tem critérios de avaliação nem impacto na pontuação.</div>';
+    }
     const autoCorr = p.autoCorrigir !== false; // padrão true
     const temJust = p.justificativa || false;
     const precisaCriterios = tipo === 'dissertativa' || (!autoCorr); // precisa de critérios se dissertativa OU se correção manual
@@ -719,7 +725,7 @@
     p.tipo = tipo;
     if (tipo==='multipla' && (!p.opcoes||p.opcoes.length===0)) p.opcoes=[{texto:'',correta:true},{texto:'',correta:false}];
     if (tipo==='simnao') p.opcoes=[{texto:'Sim',correta:false},{texto:'Não',correta:false}];
-    if (tipo==='dissertativa') p.opcoes=[];
+    if (tipo==='dissertativa' || tipo==='informativo') p.opcoes=[];
     // Atualiza botões de tipo
     const bloco = dados.blocos[bi];
     bloco.perguntas.forEach((_,i) => {
@@ -771,12 +777,12 @@
     });
   }
 
-  const SUGERIDOS = {1:'Resposta muito superficial, sem demonstrar compreensão do problema.',2:'Identifica o problema mas a abordagem é incompleta ou sem justificativa.',3:'Resposta adequada com raciocínio claro, atende ao esperado para a vaga.',4:'Resposta completa, bem estruturada, com exemplos práticos.',5:'Resposta excepcional — demonstra domínio total, visão estratégica e proatividade.'};
+  const SUGERIDOS = {0:'Não respondeu ou resposta completamente fora do contexto esperado.',1:'Resposta muito superficial, sem demonstrar compreensão do problema.',2:'Identifica o problema mas a abordagem é incompleta ou sem justificativa.',3:'Resposta adequada com raciocínio claro, atende ao esperado para a vaga.',4:'Resposta completa, bem estruturada, com exemplos práticos.',5:'Resposta excepcional — demonstra domínio total, visão estratégica e proatividade.'};
 
   window.sugerirCriterios = (bi,pi) => {
     const btn = document.querySelector(`[onclick="sugerirCriterios(${bi},${pi})"]`);
     if (btn){btn.textContent='✓ Aplicado!';setTimeout(()=>btn.textContent='✨ Sugerir',2000);}
-    [1,2,3,4,5].forEach(n=>{
+    [0,1,2,3,4,5].forEach(n=>{
       const inp=document.getElementById(`crit-${bi}-${pi}-${n}`);
       if(inp){inp.value=SUGERIDOS[n];salvarCriterio(bi,pi,n,SUGERIDOS[n]);}
     });
@@ -799,6 +805,7 @@
     let pergsList = '';
     dados.blocos.forEach((bl,bi) => {
       bl.perguntas.forEach((p,pi) => {
+        if ((p.tipo||'dissertativa') === 'informativo') return; // informativos não entram na pontuação
         const label = bl.tipo==='cenario'
           ? `Cenário ${bi+1}${bl.perguntas.length>1?' · P'+(pi+1):''} — ${bl.title||'Sem título'}`
           : `Questão ${bi+1} — ${bl.title||'Sem título'}`;
