@@ -136,6 +136,7 @@
   .notas-grid{display:flex;flex-direction:column;gap:8px}
   .nota-row{display:grid;grid-template-columns:48px 1fr;gap:12px;align-items:center}
   .nota-label{width:48px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600}
+  .nota-0{background:rgba(103,138,136,0.1);color:var(--t2)}
   .nota-1{background:rgba(229,91,91,0.15);color:#E55B5B}
   .nota-2{background:rgba(246,195,67,0.15);color:#F6C343}
   .nota-3{background:rgba(103,138,136,0.2);color:var(--mist)}
@@ -173,6 +174,15 @@
   .soma-wrap.under{background:rgba(246,195,67,0.06);border-color:rgba(246,195,67,0.3);color:var(--yellow)}
   .soma-wrap strong{color:var(--white)}
 
+  .toggle-row{display:flex;align-items:flex-start;gap:12px;cursor:pointer;padding:8px 12px;border-radius:10px;border:1px solid var(--border);background:rgba(0,0,0,0.1);transition:border-color .15s}
+  .toggle-row:hover{border-color:var(--border2)}
+  .toggle-box{width:36px;height:20px;border-radius:99px;background:rgba(255,255,255,0.1);border:1px solid var(--border);position:relative;flex-shrink:0;transition:all .2s;margin-top:2px}
+  .toggle-box.active{background:rgba(147,245,116,0.3);border-color:var(--green)}
+  .toggle-knob{width:14px;height:14px;border-radius:50%;background:var(--t2);position:absolute;top:2px;left:2px;transition:all .2s}
+  .toggle-box.active .toggle-knob{left:18px;background:var(--green)}
+  .toggle-info{flex:1}
+  .toggle-label{font-size:12px;font-weight:500;color:var(--white);display:block;margin-bottom:2px}
+  .toggle-desc{font-size:11px;color:var(--t2);line-height:1.4}
   .footer-bar{position:fixed;bottom:0;left:0;right:0;background:var(--dark);border-top:1px solid var(--border);padding:14px 48px;display:flex;justify-content:space-between;align-items:center;z-index:10}
   .footer-info{font-size:12px;color:var(--t2)}
   .footer-info strong{color:var(--green)}
@@ -382,7 +392,9 @@
               </div>
               <div id="e2-opcoes-${bi}-0" style="margin-top:10px">
                 ${renderE2Opcoes(bi,0,bl.perguntas[0])}
-              </div>` : ''}
+              </div>
+              ${(bl.perguntas[0]?.tipo||'dissertativa')!=='dissertativa'?renderTogglesSel(bi,0,bl.perguntas[0]):''}
+              ` : ''}
               ${isCenario ? `
               <div class="fg">
                 <label>Contexto / situação</label>
@@ -411,6 +423,7 @@
                       <div id="e2-opcoes-${bi}-${pi}" style="padding-left:34px">
                         ${renderE2Opcoes(bi,pi,p)}
                       </div>
+                      ${tipo!=='dissertativa'?renderTogglesSel(bi,pi,p):''}
                     </div>`}).join('')}
                 </div>
                 <button class="add-perg-btn" onclick="adicionarPergunta(${bi})">+ Adicionar pergunta</button>
@@ -496,6 +509,44 @@
       });
     });
   }
+
+  function renderTogglesSel(bi, pi, p) {
+    const temJust = p.justificativa || false;
+    const autoCorr = p.autoCorrigir !== false; // padrão true
+    return `<div style="padding-left:34px;margin-top:10px;display:flex;flex-direction:column;gap:8px">
+      <label class="toggle-row" onclick="toggleJustificativa(${bi},${pi})">
+        <div class="toggle-box ${temJust?'active':''}">
+          <div class="toggle-knob"></div>
+        </div>
+        <div class="toggle-info">
+          <span class="toggle-label">Solicitar justificativa do candidato</span>
+          <span class="toggle-desc">Candidato escreve o raciocínio além de selecionar a opção</span>
+        </div>
+      </label>
+      <label class="toggle-row" onclick="toggleAutoCorrigir(${bi},${pi})">
+        <div class="toggle-box ${autoCorr?'active':''}">
+          <div class="toggle-knob"></div>
+        </div>
+        <div class="toggle-info">
+          <span class="toggle-label">Corrigir automaticamente pela opção selecionada</span>
+          <span class="toggle-desc">Acertou = pontos cheios · Errou = 0 · ${temJust&&!autoCorr?'Avaliação manual pela justificativa':'Sem avaliação manual'}</span>
+        </div>
+      </label>
+    </div>`;
+  }
+
+  window.toggleJustificativa = (bi, pi) => {
+    dados.blocos[bi].perguntas[pi].justificativa = !dados.blocos[bi].perguntas[pi].justificativa;
+    renderBlocos();
+    document.getElementById(`bb-${bi}`)?.classList.add('open');
+  };
+
+  window.toggleAutoCorrigir = (bi, pi) => {
+    const p = dados.blocos[bi].perguntas[pi];
+    p.autoCorrigir = p.autoCorrigir === false ? true : false;
+    renderBlocos();
+    document.getElementById(`bb-${bi}`)?.classList.add('open');
+  };
 
   function atualizarFooter2() {
     document.getElementById('footer-info').innerHTML=`Etapa <strong>2 de 4</strong> — <strong>${dados.blocos.length}</strong> bloco(s)`;
@@ -638,10 +689,10 @@
           <button class="btn-sugerir" onclick="sugerirCriterios(${bi},${pi})">✨ Sugerir</button>
         </div>
         <div class="notas-grid">
-          ${[1,2,3,4,5].map(n => {
+          ${[0,1,2,3,4,5].map(n => {
             const val = p.criteria?.find(cr=>cr.score===n)?.description||'';
             return `<div class="nota-row">
-              <div class="nota-label nota-${n}">${n}</div>
+              <div class="nota-label nota-${n==='0'||n===0?'0':n}">${n}</div>
               <input class="nota-input" type="text" id="crit-${bi}-${pi}-${n}"
                 placeholder="${placeholderNota(n)}" value="${esc(val)}"
                 oninput="salvarCriterio(${bi},${pi},${n},this.value)">
@@ -735,7 +786,7 @@
     dados.blocos[bi].perguntas[pi].criteria=crit;
   };
 
-  function placeholderNota(n){return{1:'Resposta muito superficial…',2:'Identifica o problema mas incompleto…',3:'Resposta adequada com raciocínio claro…',4:'Resposta completa com exemplos práticos…',5:'Resposta excepcional, demonstra domínio total…'}[n];}
+  function placeholderNota(n){return{0:'Não respondeu ou completamente fora do contexto…',1:'Resposta muito superficial…',2:'Identifica o problema mas incompleto…',3:'Resposta adequada com raciocínio claro…',4:'Resposta completa com exemplos práticos…',5:'Resposta excepcional, demonstra domínio total…'}[n];}
 
   // ══════════════════════════════════════════
   // ETAPA 4 — PONTUAÇÃO
