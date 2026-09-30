@@ -323,6 +323,7 @@
       : '—';
     const tempo = c.timeUsed ? formatarTempo(c.timeUsed) : '—';
 
+    const { obtido, maximo } = calcularPontuacao();
     let html = `
       <div class="cand-header">
         <div class="cand-info">
@@ -330,8 +331,8 @@
           <p>${esc(c.email)} · Enviado em ${submittedAt} · Tempo: ${tempo}</p>
         </div>
         <div class="cand-score-big">
-          <div class="score-num" id="score-display">${totalScore > 0 ? totalScore.toFixed(1) : '—'}</div>
-          <div class="score-label">média geral</div>
+          <div class="score-num" id="score-display">${obtido > 0 ? obtido.toFixed(1) : '—'}</div>
+          <div class="score-label" id="score-label-max">${maximo > 0 ? '/ ' + maximo.toFixed(1) + ' pts' : 'pontos'}</div>
         </div>
       </div>`;
 
@@ -363,13 +364,14 @@
                       ? `<div class="resp-txt" style="${autoCorreta?'color:var(--green)':autoErrada?'color:var(--red)':''}">${esc(resposta)}${autoCorreta?' ✓':autoErrada?' ✗':''}</div>`
                       : `<div class="resp-vazio">Não respondeu.</div>`}
                     ${tipo!=='dissertativa' ? `<div style="font-size:11px;margin-top:6px;color:var(--t2)">Resposta correta: <strong style="color:var(--green)">${esc(opcaoCorreta)}</strong></div>` : ''}
+                    ${p.justificativa && c.justificativas?.['c'+si+'_j'+qi] ? `<div style="margin-top:10px;padding:10px 12px;background:rgba(103,138,136,0.08);border:1px solid rgba(103,138,136,0.25);border-radius:8px;font-size:12px;color:var(--mist);line-height:1.6"><span style="font-weight:600;color:var(--white);display:block;margin-bottom:4px">💬 Justificativa</span>${esc(c.justificativas['c'+si+'_j'+qi])}</div>` : ''}
                     ${p.gabarito ? `<div style="margin-top:10px;padding:10px 12px;background:rgba(246,195,67,0.06);border:1px solid rgba(246,195,67,0.2);border-radius:8px;font-size:12px;color:var(--yellow);line-height:1.6"><span style="font-weight:600;display:block;margin-bottom:4px">📋 Gabarito</span>${esc(p.gabarito)}</div>` : ''}
                   </div>
                   <div class="perg-col">
                     ${tipo==='dissertativa' ? `
-                    <div class="col-label">Critérios de avaliação</div>
+                    <div class="col-label">Critérios de avaliação (0 a 5)</div>
                     <div class="notas-grid">
-                      ${[1,2,3,4,5].map(n => {
+                      ${[0,1,2,3,4,5].map(n => {
                         const criterio = p.criteria?.find(cr => cr.score === n);
                         const selecionado = notaSelecionada === n;
                         return `
@@ -381,10 +383,21 @@
                             </div>
                           </div>`;
                       }).join('')}
-                    </div>` : `
+                    </div>` : p.autoCorrigir !== false ? `
                     <div class="col-label">Correção automática</div>
                     <div style="padding:14px;background:${autoCorreta?'rgba(147,245,116,0.08)':autoErrada?'rgba(229,91,91,0.08)':'rgba(255,255,255,0.03)'};border:1px solid ${autoCorreta?'var(--border2)':autoErrada?'rgba(229,91,91,0.3)':'var(--border)'};border-radius:10px;font-size:13px;color:${autoCorreta?'var(--green)':autoErrada?'var(--red)':'var(--t2)'}">
                       ${!resposta ? '— Não respondido' : autoCorreta ? '✓ Correto' : '✗ Incorreto'}
+                    </div>` : `
+                    <div class="col-label">Avaliação manual (0 a 5)</div>
+                    <div class="notas-grid">
+                      ${[0,1,2,3,4,5].map(n => {
+                        const criterio = p.criteria?.find(cr => cr.score === n);
+                        const selecionado = notaSelecionada === n;
+                        return `<div class="nota-row ${selecionado?'selected':''}" id="nr-${si}-${qi}-${n}" onclick="selecionarNota(${si},${qi},${n})">
+                          <div class="nota-badge n${n}">${n}</div>
+                          <div class="nota-desc ${criterio?'':'placeholder'}">${criterio?esc(criterio.description):n===0?'Não respondeu':'Critério não definido'}</div>
+                        </div>`;
+                      }).join('')}
                     </div>`}
                   </div>
                 </div>
@@ -406,42 +419,51 @@
       if (el) el.classList.toggle('selected', n === nota);
     });
 
-    // Atualiza média
-    const media = calcularMedia();
+    // Atualiza pontuação
+    const { obtido, maximo } = calcularPontuacao();
     const display = document.getElementById('score-display');
-    if (display) display.textContent = media > 0 ? media.toFixed(1) : '—';
+    if (display) display.textContent = obtido > 0 ? obtido.toFixed(1) : '—';
+    const labelMax = document.getElementById('score-label-max');
+    if (labelMax && maximo > 0) labelMax.textContent = '/ ' + maximo.toFixed(1) + ' pts';
 
     setSaveStatus('unsaved');
   };
 
-  function calcularMedia() {
+  function calcularPontuacao() {
     const blocos = processo.blocos || [];
-    let totalPontos = 0, totalPesos = 0;
+    let obtido = 0, maximo = 0;
 
     blocos.forEach((bl, si) => {
       bl.perguntas.forEach((p, qi) => {
-        const peso = p.peso || 1;
+        const pts = parseFloat(p.peso) || 0;
+        if (pts === 0) return;
         const tipo = p.tipo || 'dissertativa';
         let nota = null;
 
         if (tipo === 'dissertativa') {
-          nota = scoresAtual[`${si}-${qi}`] || null;
-        } else {
-          // Auto-corrige: acertou = 5, errou = 0
+          const score = scoresAtual[`${si}-${qi}`];
+          if (score !== undefined && score !== null) nota = (score / 5) * pts;
+        } else if (p.autoCorrigir !== false) {
           const resposta = candidatoAtual?.answers?.['c' + si + '_q' + qi] || '';
           const correta = p.opcoes?.find(o => o.correta)?.texto || '';
-          if (resposta) nota = resposta === correta ? 5 : 0;
+          if (resposta) nota = resposta === correta ? pts : 0;
+        } else {
+          // Avaliação manual — usa score do coordenador
+          const score = scoresAtual[`${si}-${qi}`];
+          if (score !== undefined && score !== null) nota = (score / 5) * pts;
         }
 
-        if (nota !== null) {
-          totalPontos += nota * peso;
-          totalPesos += 5 * peso; // máximo possível
-        }
+        if (nota !== null) { obtido += nota; maximo += pts; }
       });
     });
 
-    if (totalPesos === 0) return 0;
-    return (totalPontos / totalPesos) * 5; // retorna em escala 0-5
+    return { obtido: Math.round(obtido * 100) / 100, maximo: Math.round(maximo * 100) / 100 };
+  }
+
+  // Compatibilidade — retorna obtido para uso interno
+  function calcularMedia() {
+    const { obtido } = calcularPontuacao();
+    return obtido;
   }
 
   // ── SALVAR ──
@@ -466,15 +488,15 @@
         }
       });
     });
-    const total = calcularMedia();
+    const { obtido: total, maximo: totalMax } = calcularPontuacao();
 
     try {
       await setDoc(
         doc(db, 'processes', window.processId, 'evaluations', candidatoAtual.id),
-        { evaluatorUid: auth.currentUser?.uid, scores, total, updatedAt: serverTimestamp() },
+        { evaluatorUid: auth.currentUser?.uid, scores, total, totalMax, updatedAt: serverTimestamp() },
         { merge: true }
       );
-      avaliacoes[candidatoAtual.id] = { scores, total };
+      avaliacoes[candidatoAtual.id] = { scores, total, totalMax };
       atualizarStats();
       renderSidebar(candidatos);
       // Reativa botão do candidato atual
