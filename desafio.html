@@ -399,7 +399,11 @@
       const respAtual = ans[i]?.[qi] || '';
       html += `<div><p class="qlbl"><span class="qn">${qi+1}.</span><span>${esc(p.texto)}</span></p>`;
 
-      if (tipo === 'dissertativa') {
+      if (tipo === 'informativo') {
+        html += `<textarea class="ans" id="a${i}-${qi}" placeholder="Escreva sua resposta aqui…"
+          oninput="salvarResposta(${i},${qi},this.value)" style="border-color:rgba(103,138,136,0.3)">${esc(respAtual)}</textarea>
+          <div style="font-size:11px;color:var(--t2);margin-top:4px">ℹ Esta resposta é apenas informativa</div>`;
+      } else if (tipo === 'dissertativa') {
         html += `<textarea class="ans" id="a${i}-${qi}" placeholder="Escreva sua resposta aqui…"
           oninput="salvarResposta(${i},${qi},this.value)">${esc(respAtual)}</textarea>`;
       } else if (tipo === 'simnao') {
