@@ -228,7 +228,7 @@
         const sub = { id: d.id, ...d.data() };
         const aval = avaliacoes[d.id] || null;
         // Calcula total em 100 pontos
-        const totalPontos = aval ? calcularTotal100(aval.scores, processo.blocos || processo.scenarios?.map(sc=>({perguntas:(sc.questions||[]).map(q=>({peso:1}))}))) : null;
+        const totalPontos = (aval?.avaliado || aval?.scores?.length) ? calcularTotal100(aval.scores, processo.blocos, aval) : null;
         dados.push({ ...sub, avaliacao: aval, total100: totalPontos });
       });
 
@@ -251,23 +251,34 @@
     }
   }
 
-  function calcularTotal100(scores, blocos) {
+  function calcularPontuacaoReal(scores, blocos, aval) {
+    // Usa total/totalMax salvo na avaliação se disponível
+    if (aval?.avaliado && aval?.totalMax != null) {
+      return { obtido: aval.total, maximo: aval.totalMax };
+    }
     if (!scores || scores.length === 0) return null;
-    // Considera peso: máximo = soma(5 × peso) de todas as perguntas com score
-    let obtido = 0, maximo = 0;
     const bl = blocos || [];
+    let obtido = 0, maximo = 0;
     bl.forEach((b, si) => {
       (b.perguntas || []).forEach((p, qi) => {
-        const peso = p.peso || 1;
+        const pts = parseFloat(p.peso) || 0;
+        if (pts === 0) return;
         const s = scores.find(sc => sc.si === si && sc.qi === qi);
         if (s != null) {
-          obtido += s.score * peso;
-          maximo += 5 * peso;
+          if (s.auto) { obtido += s.score === 5 ? pts : 0; }
+          else { obtido += (s.score / 5) * pts; }
+          maximo += pts;
         }
       });
     });
-    if (maximo === 0) return null;
-    return Math.round((obtido / maximo) * 100);
+    if (maximo === 0 && obtido === 0 && blocos.every(b => b.perguntas.every(p => !p.peso))) return null;
+    return { obtido: Math.round(obtido * 100) / 100, maximo: Math.round(maximo * 100) / 100 };
+  }
+
+  function calcularTotal100(scores, blocos, aval) {
+    const r = calcularPontuacaoReal(scores, blocos, aval);
+    if (!r) return null;
+    return Math.round((r.obtido / r.maximo) * 100);
   }
 
   function atualizarStats() {
@@ -306,7 +317,7 @@
         <div class="card-name" title="${esc(c.name)}">${esc(c.name)}</div>
         <div class="card-email" title="${esc(c.email)}">${esc(c.email)}</div>
         ${avaliado ? `
-          <div class="card-score" style="color:${barColor}">${c.total100}<span>/100</span></div>
+          <div class="card-score" style="color:${barColor};font-size:22px">${ptsLabel}</div>
           <div class="card-bar-wrap"><div class="card-bar" style="width:${c.total100}%;background:${barColor}"></div></div>
           ${tag}
         ` : `<div class="card-pendente">Aguardando avaliação</div>`}
